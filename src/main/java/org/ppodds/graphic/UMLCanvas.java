@@ -55,7 +55,6 @@ public class UMLCanvas extends Canvas {
     }
 
 
-
     @Override
     public void paint(Graphics g) {
         // TODO: paint UML objects

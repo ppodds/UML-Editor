@@ -17,10 +17,6 @@ public class Editor extends JPanel {
 
     private final EditorState state;
 
-    public EditorState getState() {
-        return state;
-    }
-
     public Editor() {
         state = new EditorState(this);
 
@@ -61,6 +57,10 @@ public class Editor extends JPanel {
                 .addComponent(compositionLineBtn)
                 .addComponent(classBtn)
                 .addComponent(useCaseBtn)).addComponent(canvas));
+    }
+
+    public EditorState getState() {
+        return state;
     }
 
     public void addChangeListener(ChangeListener l) {
