@@ -1,12 +1,12 @@
 package org.ppodds.graphic;
 
 import org.ppodds.core.ResourceManager;
+import org.ppodds.core.event.ChangeListener;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class Editor {
-    private final JPanel panel;
+public class Editor extends JPanel {
     private final JButton selectBtn;
     private final JButton associationLineBtn;
     private final JButton generalizationLineBtn;
@@ -17,23 +17,26 @@ public class Editor {
 
     private final EditorState state;
 
+    public EditorState getState() {
+        return state;
+    }
+
     public Editor() {
-        state = new EditorState();
+        state = new EditorState(this);
 
-        panel = new JPanel();
-        selectBtn = new ToolButton(new ImageIcon(ResourceManager.getResource("icons/arrow-pointer-solid.png")));
-        associationLineBtn = new ToolButton("btn");
-        generalizationLineBtn = new ToolButton("btn");
-        compositionLineBtn = new ToolButton("btn");
-        classBtn = new ToolButton("btn");
-        useCaseBtn = new ToolButton("btn");
+        selectBtn = new ToolButton(new ImageIcon(ResourceManager.getResource("icons/arrow-pointer-solid.png")), this, EditorState.EditorOperation.SELECT);
+        associationLineBtn = new ToolButton("btn", this, EditorState.EditorOperation.ASSOCIATION_LINE);
+        generalizationLineBtn = new ToolButton("btn", this, EditorState.EditorOperation.GENERALIZATION_LINE);
+        compositionLineBtn = new ToolButton("btn", this, EditorState.EditorOperation.COMPOSITION_LINE);
+        classBtn = new ToolButton("btn", this, EditorState.EditorOperation.CLASS);
+        useCaseBtn = new ToolButton("btn", this, EditorState.EditorOperation.USE_CASE);
 
-        canvas = new UMLCanvas(state);
+        canvas = new UMLCanvas(this);
         canvas.setPreferredSize(new Dimension(540, 540));
-        panel.add(canvas);
+        add(canvas);
 
-        GroupLayout layout = new GroupLayout(panel);
-        panel.setLayout(layout);
+        GroupLayout layout = new GroupLayout(this);
+        setLayout(layout);
         layout.setAutoCreateGaps(true);
         layout.setAutoCreateContainerGaps(true);
 
@@ -60,7 +63,12 @@ public class Editor {
                 .addComponent(useCaseBtn)).addComponent(canvas));
     }
 
-    public JPanel getPanel() {
-        return panel;
+    public void addChangeListener(ChangeListener l) {
+        listenerList.add(ChangeListener.class, l);
     }
+
+    public ChangeListener[] getChangeListeners() {
+        return getListeners(ChangeListener.class);
+    }
+
 }
