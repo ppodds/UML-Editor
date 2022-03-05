@@ -23,11 +23,11 @@ public class Editor extends JPanel {
         state = new EditorState();
 
         selectBtn = new ToolButton(new ImageIcon(ResourceManager.getResource("icons/arrow-pointer-solid.png")), EditorState.EditorOperation.SELECT);
-        associationLineBtn = new ToolButton("btn", EditorState.EditorOperation.ASSOCIATION_LINE);
-        generalizationLineBtn = new ToolButton("btn", EditorState.EditorOperation.GENERALIZATION_LINE);
-        compositionLineBtn = new ToolButton("btn", EditorState.EditorOperation.COMPOSITION_LINE);
-        classBtn = new ToolButton("btn", EditorState.EditorOperation.CLASS);
-        useCaseBtn = new ToolButton("btn", EditorState.EditorOperation.USE_CASE);
+        associationLineBtn = new ToolButton(new ImageIcon(ResourceManager.getResource("icons/association-line.png")), EditorState.EditorOperation.ASSOCIATION_LINE);
+        generalizationLineBtn = new ToolButton(new ImageIcon(ResourceManager.getResource("icons/generalization-line.png")), EditorState.EditorOperation.GENERALIZATION_LINE);
+        compositionLineBtn = new ToolButton(new ImageIcon(ResourceManager.getResource("icons/composition-line.png")), EditorState.EditorOperation.COMPOSITION_LINE);
+        classBtn = new ToolButton(new ImageIcon(ResourceManager.getResource("icons/class.png")), EditorState.EditorOperation.CLASS);
+        useCaseBtn = new ToolButton(new ImageIcon(ResourceManager.getResource("icons/use-case.png")), EditorState.EditorOperation.USE_CASE);
 
         canvas = new UMLCanvas();
         canvas.setPreferredSize(new Dimension(540, 540));

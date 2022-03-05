@@ -7,13 +7,6 @@ public class ToolButton extends JButton {
     private final EditorState.EditorOperation operation;
     private final Editor editor;
 
-    public ToolButton(String text, EditorState.EditorOperation operation) {
-        super(text);
-        editor = Editor.getInstance();
-        this.operation = operation;
-        init(operation);
-    }
-
     public ToolButton(Icon icon, EditorState.EditorOperation operation) {
         super(icon);
         editor = Editor.getInstance();
