@@ -1,4 +1,8 @@
 package org.ppodds.graphic.object;
 
-public class UMLObject extends UMLBaseObject {
+public abstract class UMLObject extends UMLBaseObject {
+    public UMLObject(int x, int y) {
+        super();
+        setLocation(x, y);
+    }
 }

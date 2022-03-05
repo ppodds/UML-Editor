@@ -1,6 +1,9 @@
 package org.ppodds.graphic;
 
-import java.awt.*;
+import org.ppodds.graphic.object.ClassObject;
+import org.ppodds.graphic.object.UseCaseObject;
+
+import javax.swing.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -9,11 +12,11 @@ import java.awt.event.MouseMotionListener;
  * This class paint UML objects on canvas.
  * The objects should be painted
  */
-public class UMLCanvas extends Canvas {
+public class UMLCanvas extends JPanel {
     private final Editor editor;
 
     public UMLCanvas(Editor editor) {
-        super();
+        super(new UMLCanvasLayout());
         this.editor = editor;
         addMouseListener(new MouseListener() {
             @Override
@@ -23,6 +26,18 @@ public class UMLCanvas extends Canvas {
 
             @Override
             public void mousePressed(MouseEvent e) {
+                switch (editor.getState().getOperation()) {
+                    case CLASS: {
+                        createClassObject(e.getX(), e.getY());
+                        break;
+                    }
+                    case USE_CASE: {
+                        createUseCaseObject(e.getX(), e.getY());
+                        break;
+                    }
+                    default:
+                        break;
+                }
                 System.out.println("pressed");
             }
 
@@ -54,9 +69,13 @@ public class UMLCanvas extends Canvas {
         });
     }
 
+    public void createClassObject(int x, int y) {
+        add(new ClassObject(x, y));
+        repaint();
+    }
 
-    @Override
-    public void paint(Graphics g) {
-        // TODO: paint UML objects
+    public void createUseCaseObject(int x, int y) {
+        add(new UseCaseObject(x, y));
+        repaint();
     }
 }

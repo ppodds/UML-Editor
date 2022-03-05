@@ -1,4 +1,4 @@
 package org.ppodds.graphic.object;
 
-public class CompositeObject extends UMLBaseObject {
+public abstract class CompositeObject extends UMLBaseObject {
 }

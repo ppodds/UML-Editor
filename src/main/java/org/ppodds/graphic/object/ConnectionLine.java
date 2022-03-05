@@ -1,5 +1,5 @@
 package org.ppodds.graphic.object;
 
-public class ConnectionLine extends UMLBaseObject {
+public abstract class ConnectionLine extends UMLBaseObject {
 
 }

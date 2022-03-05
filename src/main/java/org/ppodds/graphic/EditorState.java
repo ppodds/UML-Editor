@@ -24,7 +24,7 @@ public class EditorState {
         }
     }
 
-    enum EditorOperation {
+    public enum EditorOperation {
         SELECT, ASSOCIATION_LINE, GENERALIZATION_LINE, COMPOSITION_LINE, CLASS, USE_CASE
     }
 }
