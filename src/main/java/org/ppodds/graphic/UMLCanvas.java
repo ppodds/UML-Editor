@@ -15,9 +15,9 @@ import java.awt.event.MouseMotionListener;
 public class UMLCanvas extends JPanel {
     private final Editor editor;
 
-    public UMLCanvas(Editor editor) {
+    public UMLCanvas() {
         super(new UMLCanvasLayout());
-        this.editor = editor;
+        editor = Editor.getInstance();
         addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -38,6 +38,10 @@ public class UMLCanvas extends JPanel {
                     default:
                         break;
                 }
+
+                // select null detect
+                if (editor.getState().getOperation() == EditorState.EditorOperation.SELECT)
+                    editor.getState().setSelected(null);
                 System.out.println("pressed");
             }
 

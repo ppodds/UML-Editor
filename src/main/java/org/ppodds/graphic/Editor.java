@@ -15,19 +15,21 @@ public class Editor extends JPanel {
     private final JButton useCaseBtn;
     private final UMLCanvas canvas;
 
+    private static Editor instance = null;
     private final EditorState state;
 
     public Editor() {
-        state = new EditorState(this);
+        instance = this;
+        state = new EditorState();
 
-        selectBtn = new ToolButton(new ImageIcon(ResourceManager.getResource("icons/arrow-pointer-solid.png")), this, EditorState.EditorOperation.SELECT);
-        associationLineBtn = new ToolButton("btn", this, EditorState.EditorOperation.ASSOCIATION_LINE);
-        generalizationLineBtn = new ToolButton("btn", this, EditorState.EditorOperation.GENERALIZATION_LINE);
-        compositionLineBtn = new ToolButton("btn", this, EditorState.EditorOperation.COMPOSITION_LINE);
-        classBtn = new ToolButton("btn", this, EditorState.EditorOperation.CLASS);
-        useCaseBtn = new ToolButton("btn", this, EditorState.EditorOperation.USE_CASE);
+        selectBtn = new ToolButton(new ImageIcon(ResourceManager.getResource("icons/arrow-pointer-solid.png")), EditorState.EditorOperation.SELECT);
+        associationLineBtn = new ToolButton("btn", EditorState.EditorOperation.ASSOCIATION_LINE);
+        generalizationLineBtn = new ToolButton("btn", EditorState.EditorOperation.GENERALIZATION_LINE);
+        compositionLineBtn = new ToolButton("btn", EditorState.EditorOperation.COMPOSITION_LINE);
+        classBtn = new ToolButton("btn", EditorState.EditorOperation.CLASS);
+        useCaseBtn = new ToolButton("btn", EditorState.EditorOperation.USE_CASE);
 
-        canvas = new UMLCanvas(this);
+        canvas = new UMLCanvas();
         canvas.setPreferredSize(new Dimension(540, 540));
         add(canvas);
 
@@ -57,6 +59,10 @@ public class Editor extends JPanel {
                 .addComponent(compositionLineBtn)
                 .addComponent(classBtn)
                 .addComponent(useCaseBtn)).addComponent(canvas));
+    }
+
+    public static Editor getInstance() {
+        return instance;
     }
 
     public EditorState getState() {

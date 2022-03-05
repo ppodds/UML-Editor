@@ -4,19 +4,19 @@ import javax.swing.*;
 import java.awt.*;
 
 public class ToolButton extends JButton {
-    private final Editor editor;
     private final EditorState.EditorOperation operation;
+    private final Editor editor;
 
-    public ToolButton(String text, Editor editor, EditorState.EditorOperation operation) {
+    public ToolButton(String text, EditorState.EditorOperation operation) {
         super(text);
-        this.editor = editor;
+        editor = Editor.getInstance();
         this.operation = operation;
         init(operation);
     }
 
-    public ToolButton(Icon icon, Editor editor, EditorState.EditorOperation operation) {
+    public ToolButton(Icon icon, EditorState.EditorOperation operation) {
         super(icon);
-        this.editor = editor;
+        editor = Editor.getInstance();
         this.operation = operation;
         init(operation);
         setMargin(new Insets(0, 0, 0, 0));
@@ -26,9 +26,9 @@ public class ToolButton extends JButton {
         setBackground(Color.WHITE);
         if (operation == EditorState.EditorOperation.SELECT)
             setBackground(Color.BLACK);
+
         addActionListener(e -> editor.getState().setOperation(this.operation));
         editor.addChangeListener(e -> {
-            Editor editor = (Editor) e.getSource();
             if (editor.getState().getOperation() == operation)
                 setBackground(Color.BLACK);
             else
