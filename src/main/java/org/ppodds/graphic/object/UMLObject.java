@@ -10,10 +10,16 @@ import org.ppodds.graphic.EditorState;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 
 public abstract class UMLObject extends UMLBaseObject {
-    protected boolean isSelected = false;
-    protected boolean isGrouped = false;
+    private boolean isSelected = false;
+    private boolean isGrouped = false;
+
+    private int beforeMoveX;
+    private int beforeMoveY;
+    private int beforeMoveXOffset;
+    private int beforeMoveYOffset;
 
     public UMLObject() {
         super();
@@ -34,6 +40,16 @@ public abstract class UMLObject extends UMLBaseObject {
         isGrouped = grouped;
     }
 
+    private static UMLObject topObject(UMLObject o) {
+        if (o.isGrouped) {
+            o = (UMLObject) o.getParent();
+            while (o.isGrouped) {
+                o = (UMLObject) o.getParent();
+            }
+        }
+        return o;
+    }
+
     private void init() {
         addMouseListener(new MouseListener() {
             @Override
@@ -46,16 +62,15 @@ public abstract class UMLObject extends UMLBaseObject {
                 UMLObject o = (UMLObject) e.getSource();
                 EditorState state = editor.getState();
                 if (state.getOperation() == EditorState.EditorOperation.SELECT) {
-                    if (o.isGrouped) {
-                        o = (UMLObject) o.getParent();
-                        while (o.isGrouped) {
-                            o = (UMLObject) o.getParent();
-                        }
-                    }
+                    o = topObject(o);
                     o.isSelected = !o.isSelected;
-                    if (o.isSelected)
+                    if (o.isSelected) {
                         state.setSelectedObjects(new UMLObject[]{o});
-                    else
+                        beforeMoveX = o.getX();
+                        beforeMoveY = o.getY();
+                        beforeMoveXOffset = e.getX();
+                        beforeMoveYOffset = e.getY();
+                    } else
                         state.setSelectedObjects(null);
                 }
             }
@@ -72,6 +87,23 @@ public abstract class UMLObject extends UMLBaseObject {
 
             @Override
             public void mouseExited(MouseEvent e) {
+
+            }
+        });
+
+        addMouseMotionListener(new MouseMotionListener() {
+            @Override
+            public void mouseDragged(MouseEvent e) {
+                UMLObject o = (UMLObject) e.getSource();
+                o = topObject(o);
+                if (o.isSelected) {
+                    o.setLocation(o.beforeMoveX + e.getX() - o.beforeMoveXOffset,
+                            o.beforeMoveY + e.getY() - o.beforeMoveYOffset);
+                }
+            }
+
+            @Override
+            public void mouseMoved(MouseEvent e) {
 
             }
         });
