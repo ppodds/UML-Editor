@@ -14,6 +14,7 @@ import java.awt.event.MouseMotionListener;
  */
 public class UMLCanvas extends JPanel {
     private final Editor editor;
+    private SelectedArea selectedArea;
 
     public UMLCanvas() {
         super(new UMLCanvasLayout());
@@ -40,13 +41,23 @@ public class UMLCanvas extends JPanel {
                 }
 
                 // select null detect
-                if (editor.getState().getOperation() == EditorState.EditorOperation.SELECT)
+                if (editor.getState().getOperation() == EditorState.EditorOperation.SELECT) {
                     editor.getState().setSelected(null);
+                    // create select area
+                    selectedArea = new SelectedArea(e.getX(), e.getY());
+                    add(selectedArea);
+                    selectedArea.repaint();
+                }
                 System.out.println("pressed");
             }
 
             @Override
             public void mouseReleased(MouseEvent e) {
+                if (editor.getState().getOperation() == EditorState.EditorOperation.SELECT && selectedArea != null) {
+                    remove(selectedArea);
+                    selectedArea = null;
+                }
+//                repaint();
                 System.out.println("released");
             }
 
@@ -63,6 +74,9 @@ public class UMLCanvas extends JPanel {
         addMouseMotionListener(new MouseMotionListener() {
             @Override
             public void mouseDragged(MouseEvent e) {
+                if (editor.getState().getOperation() == EditorState.EditorOperation.SELECT && selectedArea != null) {
+                    selectedArea.selecting(Math.max(e.getX(), 0), Math.max(e.getY(), 0));
+                }
                 System.out.println("dragged");
             }
 
