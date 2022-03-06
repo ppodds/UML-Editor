@@ -1,6 +1,8 @@
 package org.ppodds.graphic;
 
 import org.ppodds.graphic.object.ClassObject;
+import org.ppodds.graphic.object.CompositeObject;
+import org.ppodds.graphic.object.UMLObject;
 import org.ppodds.graphic.object.UseCaseObject;
 
 import javax.swing.*;
@@ -88,6 +90,16 @@ public class UMLCanvas extends JPanel {
                 System.out.println("moved");
             }
         });
+    }
+
+    public void createCompositeObject() {
+        UMLObject[] selectedObjects = editor.getState().getSelectedObjects();
+        if (selectedObjects != null && selectedObjects.length > 1) {
+            for (var o : selectedObjects)
+                remove(o);
+            add(new CompositeObject(selectedObjects));
+            repaint();
+        }
     }
 
     public void createClassObject(int x, int y) {

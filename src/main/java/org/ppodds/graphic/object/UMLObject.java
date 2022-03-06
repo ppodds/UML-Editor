@@ -13,10 +13,28 @@ import java.awt.event.MouseListener;
 
 public abstract class UMLObject extends UMLBaseObject {
     protected boolean isSelected = false;
+    protected boolean isGrouped = false;
+
+    public UMLObject() {
+        super();
+        init();
+    }
 
     public UMLObject(int x, int y) {
         super();
         setLocation(x, y);
+        init();
+    }
+
+    public boolean isGrouped() {
+        return isGrouped;
+    }
+
+    public void setGrouped(boolean grouped) {
+        isGrouped = grouped;
+    }
+
+    private void init() {
         addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -28,7 +46,13 @@ public abstract class UMLObject extends UMLBaseObject {
                 UMLObject o = (UMLObject) e.getSource();
                 EditorState state = editor.getState();
                 if (state.getOperation() == EditorState.EditorOperation.SELECT) {
-                    o.isSelected = !isSelected;
+                    if (o.isGrouped) {
+                        o = (UMLObject) o.getParent();
+                        while (o.isGrouped) {
+                            o = (UMLObject) o.getParent();
+                        }
+                    }
+                    o.isSelected = !o.isSelected;
                     state.setSelectedObjects(new UMLObject[]{o});
                 }
             }
@@ -81,10 +105,11 @@ public abstract class UMLObject extends UMLBaseObject {
         if (isSelected) {
             // connection ports
             Shape t;
-            if (this instanceof ClassObject)
+            if (this instanceof ClassObject || this instanceof CompositeObject)
                 t = new Rectangle(getWidth() - padding * 2, getHeight() - padding * 2);
             else
                 t = new Oval(getWidth() - padding * 2, getHeight() - padding * 2);
+
             Point p1 = t.getPointOfDirection(Shape.Direction.LEFT_TOP);
             Point p2 = t.getPointOfDirection(Shape.Direction.RIGHT_BOTTOM);
             Point p3 = t.getPointOfDirection(Shape.Direction.RIGHT_TOP);

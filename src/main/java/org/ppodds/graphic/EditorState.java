@@ -18,6 +18,8 @@ public class EditorState {
 
     public void setOperation(EditorOperation operation) {
         this.operation = operation;
+        if (operation != EditorOperation.SELECT)
+            selectedObjects = null;
         publishEvent();
     }
 

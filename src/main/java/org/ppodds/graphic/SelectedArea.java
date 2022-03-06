@@ -4,6 +4,7 @@ import org.ppodds.graphic.object.UMLObject;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.LinkedList;
 
 public class SelectedArea extends JPanel {
     private int centerX;
@@ -45,14 +46,20 @@ public class SelectedArea extends JPanel {
     }
 
     public void selectUMLObjects(Component[] components) {
+        LinkedList<UMLObject> selectedObjectList = new LinkedList<>();
         for (var c : components) {
             if (c instanceof UMLObject) {
+                UMLObject o = (UMLObject) c;
                 // check if the object in the selected area
-                if (c.getX() > getX() && c.getX() + c.getWidth() < getX() + getWidth()
-                        && c.getY() > getY() && c.getY() + c.getHeight() < getY() + getHeight()) {
-                    ((UMLObject) c).setSelected(true);
+                if (o.getX() > getX() && o.getX() + o.getWidth() < getX() + getWidth()
+                        && o.getY() > getY() && o.getY() + o.getHeight() < getY() + getHeight()
+                        && !o.isGrouped()) {
+                    o.setSelected(true);
+                    selectedObjectList.add(o);
                 }
             }
         }
+        UMLObject[] selectedObjects = new UMLObject[selectedObjectList.size()];
+        Editor.getInstance().getState().setSelectedObjects(selectedObjectList.toArray(selectedObjects));
     }
 }

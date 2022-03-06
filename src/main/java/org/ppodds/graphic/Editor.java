@@ -77,4 +77,7 @@ public class Editor extends JPanel {
         return getListeners(ChangeListener.class);
     }
 
+    public UMLCanvas getCanvas() {
+        return canvas;
+    }
 }
