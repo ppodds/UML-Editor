@@ -27,7 +27,6 @@ public class CompositeObject extends UMLObject {
     @Override
     public void paintComponent(Graphics g) {
         Graphics2D g2 = (Graphics2D) g;
-        g2.drawRect(getX(), getY(), getWidth(), getHeight());
         g2.setPaint(Color.BLACK);
         paintConnectionPorts(g);
     }
