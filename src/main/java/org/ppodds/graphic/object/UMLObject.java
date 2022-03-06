@@ -53,7 +53,10 @@ public abstract class UMLObject extends UMLBaseObject {
                         }
                     }
                     o.isSelected = !o.isSelected;
-                    state.setSelectedObjects(new UMLObject[]{o});
+                    if (o.isSelected)
+                        state.setSelectedObjects(new UMLObject[]{o});
+                    else
+                        state.setSelectedObjects(null);
                 }
             }
 
