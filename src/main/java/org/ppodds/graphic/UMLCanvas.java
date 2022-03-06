@@ -42,7 +42,7 @@ public class UMLCanvas extends JPanel {
 
                 // select null detect
                 if (editor.getState().getOperation() == EditorState.EditorOperation.SELECT) {
-                    editor.getState().setSelected(null);
+                    editor.getState().setSelectedObjects(null);
                     // create select area
                     selectedArea = new SelectedArea(e.getX(), e.getY());
                     add(selectedArea);
@@ -54,10 +54,13 @@ public class UMLCanvas extends JPanel {
             @Override
             public void mouseReleased(MouseEvent e) {
                 if (editor.getState().getOperation() == EditorState.EditorOperation.SELECT && selectedArea != null) {
+                    // select UMLObjects in selected area
+                    selectedArea.selectUMLObjects(getComponents());
+
                     remove(selectedArea);
                     selectedArea = null;
+                    repaint();
                 }
-//                repaint();
                 System.out.println("released");
             }
 

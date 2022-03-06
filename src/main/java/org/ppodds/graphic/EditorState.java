@@ -6,7 +6,7 @@ import org.ppodds.graphic.object.UMLObject;
 public class EditorState {
     private final Editor editor;
     private EditorOperation operation = EditorOperation.SELECT;
-    private UMLObject selected;
+    private UMLObject[] selectedObjects = null;
 
     public EditorState() {
         editor = Editor.getInstance();
@@ -27,12 +27,12 @@ public class EditorState {
         }
     }
 
-    public UMLObject getSelected() {
-        return selected;
+    public UMLObject[] getSelectedObjects() {
+        return selectedObjects;
     }
 
-    public void setSelected(UMLObject selected) {
-        this.selected = selected;
+    public void setSelectedObjects(UMLObject[] selectedObjects) {
+        this.selectedObjects = selectedObjects;
         publishEvent();
     }
 

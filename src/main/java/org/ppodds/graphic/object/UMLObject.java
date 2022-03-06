@@ -25,11 +25,11 @@ public abstract class UMLObject extends UMLBaseObject {
 
             @Override
             public void mousePressed(MouseEvent e) {
-                var o = (UMLObject) e.getSource();
+                UMLObject o = (UMLObject) e.getSource();
                 EditorState state = editor.getState();
                 if (state.getOperation() == EditorState.EditorOperation.SELECT) {
                     o.isSelected = !isSelected;
-                    state.setSelected(o);
+                    state.setSelectedObjects(new UMLObject[]{o});
                 }
             }
 
@@ -50,12 +50,30 @@ public abstract class UMLObject extends UMLBaseObject {
         });
         // set isSelected = false when select other object or null
         editor.addChangeListener(e -> {
-            var selected = ((Editor) e.getSource()).getState().getSelected();
-            if (selected == null || !selected.equals(this)) {
+            UMLObject[] selectedObjects = ((Editor) e.getSource()).getState().getSelectedObjects();
+            if (selectedObjects == null) {
                 isSelected = false;
+            } else {
+                boolean inSelectedObjects = false;
+                for (var o : selectedObjects) {
+                    if (o.equals(this)) {
+                        inSelectedObjects = true;
+                        break;
+                    }
+                }
+                if (!inSelectedObjects)
+                    isSelected = false;
             }
             repaint();
         });
+    }
+
+    public boolean isSelected() {
+        return isSelected;
+    }
+
+    public void setSelected(boolean selected) {
+        isSelected = selected;
     }
 
     protected void paintConnectionPorts(Graphics g) {
