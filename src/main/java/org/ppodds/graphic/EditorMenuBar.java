@@ -17,6 +17,10 @@ public class EditorMenuBar extends JMenuBar {
             editor.getState().setSelectedObjects(null);
         });
         JMenuItem ungroup = new JMenuItem("ungroup");
+        ungroup.addActionListener(e -> {
+            editor.getCanvas().ungroupCompositeObject();
+            editor.getState().setSelectedObjects(null);
+        });
         JMenuItem changeObjectName = new JMenuItem("change object name");
         editMenu.add(group);
         editMenu.add(ungroup);

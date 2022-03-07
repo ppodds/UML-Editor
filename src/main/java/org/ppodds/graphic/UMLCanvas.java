@@ -102,6 +102,23 @@ public class UMLCanvas extends JPanel {
         }
     }
 
+    public void ungroupCompositeObject() {
+        UMLObject[] selectedObjects = editor.getState().getSelectedObjects();
+        if (selectedObjects != null && selectedObjects.length == 1
+                && selectedObjects[0] instanceof CompositeObject) {
+            CompositeObject o = (CompositeObject) selectedObjects[0];
+            remove(o);
+            int x = o.getX(), y = o.getY();
+            for (var child : o.getComponents()) {
+                o.remove(child);
+                add(child);
+                child.setLocation(x + child.getX(), y + child.getY());
+                ((UMLObject) child).setGrouped(false);
+            }
+            repaint();
+        }
+    }
+
     public void createClassObject(int x, int y) {
         add(new ClassObject(x, y));
         repaint();
