@@ -21,6 +21,133 @@ public abstract class UMLObject extends UMLBaseObject {
     private int beforeMoveXOffset;
     private int beforeMoveYOffset;
 
+    private static CreatingConnectionLine creatingConnectionLine = null;
+
+    private void init() {
+        addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                UMLObject o = (UMLObject) e.getSource();
+                EditorState state = editor.getState();
+                if (state.getOperation() == EditorState.EditorOperation.SELECT) {
+                    o = topObject(o);
+                    o.isSelected = !o.isSelected;
+                    if (o.isSelected) {
+                        state.setSelectedObjects(new UMLObject[]{o});
+                        beforeMoveX = o.getX();
+                        beforeMoveY = o.getY();
+                        beforeMoveXOffset = e.getX();
+                        beforeMoveYOffset = e.getY();
+                    } else
+                        state.setSelectedObjects(null);
+                } else if ((state.getOperation() == EditorState.EditorOperation.ASSOCIATION_LINE
+                        || state.getOperation() == EditorState.EditorOperation.GENERALIZATION_LINE
+                        || state.getOperation() == EditorState.EditorOperation.COMPOSITION_LINE)
+                        && !o.isGrouped) {
+                    var t = new CreatingConnectionLine();
+                    switch (state.getOperation()) {
+                        case ASSOCIATION_LINE -> t.type = ConnectionLine.ConnectionLineType.ASSOCIATION_LINE;
+                        case GENERALIZATION_LINE -> t.type = ConnectionLine.ConnectionLineType.GENERALIZATION_LINE;
+                        case COMPOSITION_LINE -> t.type = ConnectionLine.ConnectionLineType.COMPOSITION_LINE;
+                    }
+                    t.fromConnectionPort = getConnectionPortDirection(e.getX(), e.getY());
+                    UMLObject.creatingConnectionLine = t;
+                }
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                UMLObject o = (UMLObject) e.getSource();
+                EditorState state = editor.getState();
+                if (UMLObject.creatingConnectionLine != null
+                        && (state.getOperation() == EditorState.EditorOperation.ASSOCIATION_LINE
+                        || state.getOperation() == EditorState.EditorOperation.GENERALIZATION_LINE
+                        || state.getOperation() == EditorState.EditorOperation.COMPOSITION_LINE)
+                        && !o.isGrouped) {
+                    int x = o.getX() + e.getX();
+                    int y = o.getY() + e.getY();
+
+                    UMLObject toObject = null;
+                    for (var c : editor.getCanvas().getComponents()) {
+                        if (c instanceof ClassObject || c instanceof UseCaseObject) {
+                            // check if the mouse in the object
+                            if (x > c.getX() && x < c.getX() + c.getWidth()
+                                    && y > c.getY() && y < c.getY() + c.getHeight()) {
+                                if (toObject == null || toObject.depth > ((UMLObject) c).depth) {
+                                    toObject = (UMLObject) c;
+                                }
+                            }
+                        }
+//                        else {
+//
+//                        }
+                    }
+                    if (toObject != null) {
+                        var t = UMLObject.creatingConnectionLine;
+                        editor.getCanvas().createConnectionLine(t.type,
+                                t.fromConnectionPort,
+                                toObject.getConnectionPortDirection(
+                                        x - toObject.getX(),
+                                        y - toObject.getY()),
+                                o, toObject);
+                    }
+                    UMLObject.creatingConnectionLine = null;
+                }
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+
+            }
+        });
+
+        addMouseMotionListener(new MouseMotionListener() {
+            @Override
+            public void mouseDragged(MouseEvent e) {
+                UMLObject o = (UMLObject) e.getSource();
+                o = topObject(o);
+                if (o.isSelected) {
+                    o.setLocation(o.beforeMoveX + e.getX() - o.beforeMoveXOffset,
+                            o.beforeMoveY + e.getY() - o.beforeMoveYOffset);
+                    editor.getCanvas().repaint();
+                }
+            }
+
+            @Override
+            public void mouseMoved(MouseEvent e) {
+
+            }
+        });
+        // set isSelected = false when select other object or null
+        editor.addChangeListener(e -> {
+            UMLObject[] selectedObjects = ((Editor) e.getSource()).getState().getSelectedObjects();
+            if (selectedObjects == null) {
+                isSelected = false;
+            } else {
+                boolean inSelectedObjects = false;
+                for (var o : selectedObjects) {
+                    if (o.equals(this)) {
+                        inSelectedObjects = true;
+                        break;
+                    }
+                }
+                if (!inSelectedObjects)
+                    isSelected = false;
+            }
+            repaint();
+        });
+    }
+
     public UMLObject() {
         super();
         init();
@@ -50,81 +177,19 @@ public abstract class UMLObject extends UMLBaseObject {
         return o;
     }
 
-    private void init() {
-        addMouseListener(new MouseListener() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
+    public Point getConnectionPortOfDirection(ConnectionPortDirection direction) {
+        Shape t;
+        if (this instanceof ClassObject || this instanceof CompositeObject)
+            t = new Rectangle(getWidth() - padding * 2, getHeight() - padding * 2);
+        else
+            t = new Oval(getWidth() - padding * 2, getHeight() - padding * 2);
 
-            }
-
-            @Override
-            public void mousePressed(MouseEvent e) {
-                UMLObject o = (UMLObject) e.getSource();
-                EditorState state = editor.getState();
-                if (state.getOperation() == EditorState.EditorOperation.SELECT) {
-                    o = topObject(o);
-                    o.isSelected = !o.isSelected;
-                    if (o.isSelected) {
-                        state.setSelectedObjects(new UMLObject[]{o});
-                        beforeMoveX = o.getX();
-                        beforeMoveY = o.getY();
-                        beforeMoveXOffset = e.getX();
-                        beforeMoveYOffset = e.getY();
-                    } else
-                        state.setSelectedObjects(null);
-                }
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mouseEntered(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-
-            }
-        });
-
-        addMouseMotionListener(new MouseMotionListener() {
-            @Override
-            public void mouseDragged(MouseEvent e) {
-                UMLObject o = (UMLObject) e.getSource();
-                o = topObject(o);
-                if (o.isSelected) {
-                    o.setLocation(o.beforeMoveX + e.getX() - o.beforeMoveXOffset,
-                            o.beforeMoveY + e.getY() - o.beforeMoveYOffset);
-                }
-            }
-
-            @Override
-            public void mouseMoved(MouseEvent e) {
-
-            }
-        });
-        // set isSelected = false when select other object or null
-        editor.addChangeListener(e -> {
-            UMLObject[] selectedObjects = ((Editor) e.getSource()).getState().getSelectedObjects();
-            if (selectedObjects == null) {
-                isSelected = false;
-            } else {
-                boolean inSelectedObjects = false;
-                for (var o : selectedObjects) {
-                    if (o.equals(this)) {
-                        inSelectedObjects = true;
-                        break;
-                    }
-                }
-                if (!inSelectedObjects)
-                    isSelected = false;
-            }
-            repaint();
-        });
+        return switch (direction) {
+            case TOP -> t.getPointOfDirection(Shape.Direction.TOP);
+            case RIGHT -> t.getPointOfDirection(Shape.Direction.RIGHT);
+            case BOTTOM -> t.getPointOfDirection(Shape.Direction.BOTTOM);
+            case LEFT -> t.getPointOfDirection(Shape.Direction.LEFT);
+        };
     }
 
     public boolean isSelected() {
@@ -172,5 +237,30 @@ public abstract class UMLObject extends UMLBaseObject {
             g2.fillRect(p7.getX() + padding - width, p7.getY() + padding - height / 2, width, height);
             g2.fillRect(p8.getX() + padding, p8.getY() + padding - height / 2, width, height);
         }
+    }
+
+    public ConnectionPortDirection getConnectionPortDirection(int x, int y) {
+        int centerX = getWidth() / 2;
+        int centerY = getHeight() / 2;
+        double degree = Math.toDegrees(
+                Math.acos((x - centerX) / Math.sqrt(Math.pow(x - centerX, 2) + Math.pow(y - centerY, 2))));
+        if (degree >= 45 && degree <= 135) {
+            if (centerY < y)
+                return ConnectionPortDirection.BOTTOM;
+            else
+                return ConnectionPortDirection.TOP;
+        } else if (degree >= 0 && degree <= 45)
+            return ConnectionPortDirection.RIGHT;
+        else
+            return ConnectionPortDirection.LEFT;
+    }
+
+    public enum ConnectionPortDirection {
+        TOP, RIGHT, BOTTOM, LEFT
+    }
+
+    private class CreatingConnectionLine {
+        public ConnectionLine.ConnectionLineType type;
+        public UMLObject.ConnectionPortDirection fromConnectionPort;
     }
 }

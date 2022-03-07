@@ -14,6 +14,14 @@ public abstract class UMLBaseObject extends JComponent {
         editor = Editor.getInstance();
     }
 
+    public int getDepth() {
+        return depth;
+    }
+
+    public int getPadding() {
+        return padding;
+    }
+
     @Override
     public abstract void paintComponent(Graphics g);
 }

@@ -1,14 +1,15 @@
 package org.ppodds.graphic;
 
-import org.ppodds.graphic.object.ClassObject;
-import org.ppodds.graphic.object.CompositeObject;
-import org.ppodds.graphic.object.UMLObject;
-import org.ppodds.graphic.object.UseCaseObject;
+import org.ppodds.core.math.Point;
+import org.ppodds.graphic.object.*;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * This class paint UML objects on canvas.
@@ -17,10 +18,12 @@ import java.awt.event.MouseMotionListener;
 public class UMLCanvas extends JPanel {
     private final Editor editor;
     private SelectedArea selectedArea;
+    private final List<ConnectionLine> connectionLineList;
 
     public UMLCanvas() {
         super(new UMLCanvasLayout());
         editor = Editor.getInstance();
+        connectionLineList = new LinkedList<>();
         addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -127,5 +130,27 @@ public class UMLCanvas extends JPanel {
     public void createUseCaseObject(int x, int y) {
         add(new UseCaseObject(x, y));
         repaint();
+    }
+
+    public void createConnectionLine(ConnectionLine.ConnectionLineType type, UMLObject.ConnectionPortDirection fromConnectionPort, UMLObject.ConnectionPortDirection toConnectionPort, UMLObject fromObject, UMLObject toObject) {
+        connectionLineList.add(new ConnectionLine(type, fromConnectionPort, toConnectionPort, fromObject, toObject));
+        repaint();
+    }
+
+    @Override
+    public void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        Graphics2D g2 = (Graphics2D) g;
+        g2.setPaint(Color.BLACK);
+        for (var c : connectionLineList) {
+            UMLObject fromObject = c.getFromObject();
+            org.ppodds.core.math.Point p1 = fromObject.getConnectionPortOfDirection(c.getFromConnectionPort());
+            UMLObject toObject = c.getToObject();
+            Point p2 = toObject.getConnectionPortOfDirection(c.getToConnectionPort());
+            g2.drawLine(fromObject.getX() + fromObject.getPadding() + p1.getX(),
+                    fromObject.getY() + fromObject.getPadding() + p1.getY(),
+                    toObject.getX() + toObject.getPadding() + p2.getX(),
+                    toObject.getY() + toObject.getPadding() + p2.getY());
+        }
     }
 }
