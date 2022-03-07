@@ -1,6 +1,7 @@
 package org.ppodds.graphic;
 
 import org.ppodds.core.math.Point;
+import org.ppodds.core.math.Vector2D;
 import org.ppodds.graphic.object.*;
 
 import javax.swing.*;
@@ -8,6 +9,7 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.awt.geom.Path2D;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -147,10 +149,33 @@ public class UMLCanvas extends JPanel {
             org.ppodds.core.math.Point p1 = fromObject.getConnectionPortOfDirection(c.getFromConnectionPort());
             UMLObject toObject = c.getToObject();
             Point p2 = toObject.getConnectionPortOfDirection(c.getToConnectionPort());
-            g2.drawLine(fromObject.getX() + fromObject.getPadding() + p1.getX(),
-                    fromObject.getY() + fromObject.getPadding() + p1.getY(),
-                    toObject.getX() + toObject.getPadding() + p2.getX(),
-                    toObject.getY() + toObject.getPadding() + p2.getY());
+            switch (c.getType()) {
+                case ASSOCIATION_LINE -> {
+                    Vector2D start = new Vector2D(fromObject.getX() + fromObject.getPadding() + p1.getX(),
+                            fromObject.getY() + fromObject.getPadding() + p1.getY());
+                    Vector2D end = new Vector2D(toObject.getX() + toObject.getPadding() + p2.getX(),
+                            toObject.getY() + toObject.getPadding() + p2.getY());
+                    Vector2D v = end.subtract(start);
+                    Vector2D base = v.normalVector().unitVector().multiply(7 * 2);
+                    Vector2D lineEnd = start.add(v.subtract(v.unitVector().multiply(7 * Math.sqrt(3))));
+                    g2.drawLine((int) start.x, (int) start.y, (int) lineEnd.x, (int) lineEnd.y);
+                    g2.draw(new Triangle(lineEnd, base));
+                }
+            }
+
+        }
+    }
+
+
+    private class Triangle extends Path2D.Double {
+        public Triangle(Vector2D basePoint, Vector2D base) {
+            Vector2D p1 = basePoint.add(base.multiply(0.5));
+            Vector2D p2 = basePoint.add(base.normalVector().reverse());
+            Vector2D p3 = basePoint.add(base.multiply(0.5).reverse());
+            moveTo(p1.x, p1.y);
+            lineTo(p2.x, p2.y);
+            lineTo(p3.x, p3.y);
+            closePath();
         }
     }
 }
