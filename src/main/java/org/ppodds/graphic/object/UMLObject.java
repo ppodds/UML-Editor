@@ -48,7 +48,7 @@ public abstract class UMLObject extends UMLBaseObject {
                 } else if ((state.getOperation() == EditorState.EditorOperation.ASSOCIATION_LINE
                         || state.getOperation() == EditorState.EditorOperation.GENERALIZATION_LINE
                         || state.getOperation() == EditorState.EditorOperation.COMPOSITION_LINE)
-                        && !o.isGrouped) {
+                        && !o.isGrouped && !(o instanceof CompositeObject)) {
                     var t = new CreatingConnectionLine();
                     switch (state.getOperation()) {
                         case ASSOCIATION_LINE -> t.type = ConnectionLine.ConnectionLineType.ASSOCIATION_LINE;
