@@ -124,6 +124,13 @@ public class UMLCanvas extends JPanel {
         }
     }
 
+    public void changeObjectName(UMLObject obj, String name) {
+        if (obj instanceof CompositeObject)
+            return;
+        obj.setName(name);
+        repaint();
+    }
+
     public void createClassObject(int x, int y) {
         add(new ClassObject(x, y));
         repaint();

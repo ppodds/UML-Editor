@@ -1,5 +1,8 @@
 package org.ppodds.graphic;
 
+import org.ppodds.graphic.object.CompositeObject;
+import org.ppodds.graphic.object.UMLObject;
+
 import javax.swing.*;
 
 public class EditorMenuBar extends JMenuBar {
@@ -22,6 +25,14 @@ public class EditorMenuBar extends JMenuBar {
             editor.getState().setSelectedObjects(null);
         });
         JMenuItem changeObjectName = new JMenuItem("change object name");
+        changeObjectName.addActionListener(e -> {
+            UMLObject[] selectedObjects = editor.getState().getSelectedObjects();
+            if (selectedObjects != null
+                    && selectedObjects.length == 1
+                    && !(selectedObjects[0] instanceof CompositeObject)) {
+                new ChangeObjectNameFrame(selectedObjects[0]);
+            }
+        });
         editMenu.add(group);
         editMenu.add(ungroup);
         editMenu.add(changeObjectName);
