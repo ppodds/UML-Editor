@@ -26,6 +26,7 @@ public class UMLCanvas extends JPanel {
         super(new UMLCanvasLayout());
         editor = Editor.getInstance();
         connectionLineList = new LinkedList<>();
+        setPreferredSize(new Dimension(540, 540));
         addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -151,6 +152,8 @@ public class UMLCanvas extends JPanel {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
         g2.setPaint(Color.BLACK);
+        g2.drawRect(0, 0, getWidth(), getHeight());
+        // draw connection lines
         for (var c : connectionLineList) {
             UMLObject fromObject = c.getFromObject();
             org.ppodds.core.math.Point p1 = fromObject.getConnectionPortOfDirection(c.getFromConnectionPort());

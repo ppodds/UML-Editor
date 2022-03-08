@@ -4,7 +4,6 @@ import org.ppodds.core.ResourceManager;
 import org.ppodds.core.event.ChangeListener;
 
 import javax.swing.*;
-import java.awt.*;
 
 public class Editor extends JPanel {
     private final JButton selectBtn;
@@ -30,7 +29,6 @@ public class Editor extends JPanel {
         useCaseBtn = new ToolButton(new ImageIcon(ResourceManager.getResource("icons/use-case.png")), EditorState.EditorOperation.USE_CASE);
 
         canvas = new UMLCanvas();
-        canvas.setPreferredSize(new Dimension(540, 540));
         add(canvas);
 
         GroupLayout layout = new GroupLayout(this);
