@@ -150,7 +150,7 @@ public class UMLCanvas extends JPanel {
             UMLObject toObject = c.getToObject();
             Point p2 = toObject.getConnectionPortOfDirection(c.getToConnectionPort());
             switch (c.getType()) {
-                case ASSOCIATION_LINE -> {
+                case GENERALIZATION_LINE -> {
                     Vector2D start = new Vector2D(fromObject.getX() + fromObject.getPadding() + p1.getX(),
                             fromObject.getY() + fromObject.getPadding() + p1.getY());
                     Vector2D end = new Vector2D(toObject.getX() + toObject.getPadding() + p2.getX(),
