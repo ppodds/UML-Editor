@@ -78,7 +78,7 @@ public abstract class UMLObject extends UMLBaseObject {
                             // check if the mouse in the object
                             if (x > c.getX() && x < c.getX() + c.getWidth()
                                     && y > c.getY() && y < c.getY() + c.getHeight()) {
-                                if (toObject == null || toObject.depth > ((UMLObject) c).depth) {
+                                if (toObject == null) {
                                     toObject = (UMLObject) c;
                                 }
                             }

@@ -6,7 +6,6 @@ import javax.swing.*;
 import java.awt.*;
 
 public abstract class UMLBaseObject extends JComponent {
-    protected int depth;
     protected final Editor editor;
     protected int padding;
 
@@ -14,9 +13,6 @@ public abstract class UMLBaseObject extends JComponent {
         editor = Editor.getInstance();
     }
 
-    public int getDepth() {
-        return depth;
-    }
 
     public int getPadding() {
         return padding;
