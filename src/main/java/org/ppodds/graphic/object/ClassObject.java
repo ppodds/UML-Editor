@@ -13,9 +13,11 @@ public class ClassObject extends UMLObject {
     @Override
     public void paintComponent(Graphics g) {
         Graphics2D g2 = (Graphics2D) g;
-        g2.setPaint(Color.BLACK);
+        g2.setPaint(Color.LIGHT_GRAY);
         int t1 = getWidth() - padding * 2;
         int t2 = getHeight() - padding * 2;
+        g2.fillRect(padding, padding, t1, t2);
+        g2.setPaint(Color.BLACK);
         g2.drawRect(padding, padding, t1, t2);
         g2.drawLine(padding, padding + t2 / 3, padding + t1, padding + t2 / 3);
         g2.drawLine(padding, padding + t2 / 3 * 2, padding + t1, padding + t2 / 3 * 2);
