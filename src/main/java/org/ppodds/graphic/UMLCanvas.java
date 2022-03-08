@@ -172,6 +172,17 @@ public class UMLCanvas extends JPanel {
                     g2.drawLine((int) start.x, (int) start.y, (int) lineEnd.x, (int) lineEnd.y);
                     g2.draw(new Triangle(lineEnd, base));
                 }
+                case COMPOSITION_LINE -> {
+                    Vector2D start = new Vector2D(fromObject.getX() + fromObject.getPadding() + p1.getX(),
+                            fromObject.getY() + fromObject.getPadding() + p1.getY());
+                    Vector2D end = new Vector2D(toObject.getX() + toObject.getPadding() + p2.getX(),
+                            toObject.getY() + toObject.getPadding() + p2.getY());
+                    Vector2D v = end.subtract(start);
+                    Vector2D h = v.unitVector().multiply(8 * Math.sqrt(2));
+                    Vector2D lineEnd = start.add(v.subtract(h));
+                    g2.drawLine((int) start.x, (int) start.y, (int) lineEnd.x, (int) lineEnd.y);
+                    g2.draw(new Diamond(lineEnd, h));
+                }
             }
 
         }
@@ -194,6 +205,20 @@ public class UMLCanvas extends JPanel {
             Vector2D p2 = basePoint.add(base.normalVector().reverse());
             Vector2D p3 = basePoint.add(base.multiply(0.5).reverse());
             moveTo(p1.x, p1.y);
+            lineTo(p2.x, p2.y);
+            lineTo(p3.x, p3.y);
+            closePath();
+        }
+    }
+
+    private class Diamond extends Path2D.Double {
+        public Diamond(Vector2D basePoint, Vector2D hypotenuse) {
+            Vector2D t = hypotenuse.multiply(0.5);
+            Vector2D p1 = basePoint.add(t.add(t.normalVector().reverse()));
+            Vector2D p2 = basePoint.add(hypotenuse);
+            Vector2D p3 = basePoint.add(t.add(t.normalVector()));
+            moveTo(basePoint.x, basePoint.y);
+            lineTo(p1.x, p1.y);
             lineTo(p2.x, p2.y);
             lineTo(p3.x, p3.y);
             closePath();

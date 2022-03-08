@@ -37,4 +37,11 @@ public class Vector2D {
     public Vector2D subtract(Vector2D v) {
         return new Vector2D(this.x - v.x, this.y - v.y);
     }
+
+    public Vector2D rotate(double degree) {
+        double radians = Math.toRadians(degree);
+        double cos = Math.cos(radians);
+        double sin = Math.sin(radians);
+        return new Vector2D(cos * x - sin * y, sin * x + cos * y);
+    }
 }
