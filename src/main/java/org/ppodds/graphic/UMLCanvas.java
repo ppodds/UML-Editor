@@ -150,6 +150,17 @@ public class UMLCanvas extends JPanel {
             UMLObject toObject = c.getToObject();
             Point p2 = toObject.getConnectionPortOfDirection(c.getToConnectionPort());
             switch (c.getType()) {
+                case ASSOCIATION_LINE -> {
+                    Vector2D start = new Vector2D(fromObject.getX() + fromObject.getPadding() + p1.getX(),
+                            fromObject.getY() + fromObject.getPadding() + p1.getY());
+                    Vector2D end = new Vector2D(toObject.getX() + toObject.getPadding() + p2.getX(),
+                            toObject.getY() + toObject.getPadding() + p2.getY());
+                    Vector2D v = end.subtract(start);
+                    Vector2D base = v.normalVector().unitVector().multiply(7 * 2);
+                    Vector2D lineEnd = start.add(v.subtract(v.unitVector().multiply(7 * Math.sqrt(3))));
+                    g2.drawLine((int) start.x, (int) start.y, (int) end.x, (int) end.y);
+                    g2.draw(new Arrow(lineEnd, base));
+                }
                 case GENERALIZATION_LINE -> {
                     Vector2D start = new Vector2D(fromObject.getX() + fromObject.getPadding() + p1.getX(),
                             fromObject.getY() + fromObject.getPadding() + p1.getY());
@@ -166,6 +177,16 @@ public class UMLCanvas extends JPanel {
         }
     }
 
+    private class Arrow extends Path2D.Double {
+        public Arrow(Vector2D basePoint, Vector2D base) {
+            Vector2D p1 = basePoint.add(base.multiply(0.5));
+            Vector2D p2 = basePoint.add(base.normalVector().reverse());
+            Vector2D p3 = basePoint.add(base.multiply(0.5).reverse());
+            moveTo(p1.x, p1.y);
+            lineTo(p2.x, p2.y);
+            lineTo(p3.x, p3.y);
+        }
+    }
 
     private class Triangle extends Path2D.Double {
         public Triangle(Vector2D basePoint, Vector2D base) {
