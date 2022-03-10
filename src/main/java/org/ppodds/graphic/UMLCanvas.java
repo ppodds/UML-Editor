@@ -159,12 +159,24 @@ public class UMLCanvas extends JPanel {
             org.ppodds.core.math.Point p1 = fromObject.getConnectionPortOfDirection(c.getFromConnectionPort());
             UMLObject toObject = c.getToObject();
             Point p2 = toObject.getConnectionPortOfDirection(c.getToConnectionPort());
+            int fromObjectX = fromObject.getX() + fromObject.getPadding() + p1.getX();
+            int fromObjectY = fromObject.getY() + fromObject.getPadding() + p1.getY();
+            int toObjectX = toObject.getX() + toObject.getPadding() + p2.getX();
+            int toObjectY = toObject.getY() + toObject.getPadding() + p2.getY();
+            while (fromObject.isGrouped()) {
+                fromObject = (UMLObject) fromObject.getParent();
+                fromObjectX += fromObject.getX() + fromObject.getPadding();
+                fromObjectY += fromObject.getY() + fromObject.getPadding();
+            }
+            while (toObject.isGrouped()) {
+                toObject = (UMLObject) toObject.getParent();
+                toObjectX += toObject.getX() + toObject.getPadding();
+                toObjectY += toObject.getY() + toObject.getPadding();
+            }
+            Vector2D start = new Vector2D(fromObjectX, fromObjectY);
+            Vector2D end = new Vector2D(toObjectX, toObjectY);
             switch (c.getType()) {
                 case ASSOCIATION_LINE -> {
-                    Vector2D start = new Vector2D(fromObject.getX() + fromObject.getPadding() + p1.getX(),
-                            fromObject.getY() + fromObject.getPadding() + p1.getY());
-                    Vector2D end = new Vector2D(toObject.getX() + toObject.getPadding() + p2.getX(),
-                            toObject.getY() + toObject.getPadding() + p2.getY());
                     Vector2D v = end.subtract(start);
                     Vector2D base = v.normalVector().unitVector().multiply(7 * 2);
                     Vector2D lineEnd = start.add(v.subtract(v.unitVector().multiply(7 * Math.sqrt(3))));
@@ -172,10 +184,6 @@ public class UMLCanvas extends JPanel {
                     g2.draw(new Arrow(lineEnd, base));
                 }
                 case GENERALIZATION_LINE -> {
-                    Vector2D start = new Vector2D(fromObject.getX() + fromObject.getPadding() + p1.getX(),
-                            fromObject.getY() + fromObject.getPadding() + p1.getY());
-                    Vector2D end = new Vector2D(toObject.getX() + toObject.getPadding() + p2.getX(),
-                            toObject.getY() + toObject.getPadding() + p2.getY());
                     Vector2D v = end.subtract(start);
                     Vector2D base = v.normalVector().unitVector().multiply(7 * 2);
                     Vector2D lineEnd = start.add(v.subtract(v.unitVector().multiply(7 * Math.sqrt(3))));
@@ -183,10 +191,6 @@ public class UMLCanvas extends JPanel {
                     g2.draw(new Triangle(lineEnd, base));
                 }
                 case COMPOSITION_LINE -> {
-                    Vector2D start = new Vector2D(fromObject.getX() + fromObject.getPadding() + p1.getX(),
-                            fromObject.getY() + fromObject.getPadding() + p1.getY());
-                    Vector2D end = new Vector2D(toObject.getX() + toObject.getPadding() + p2.getX(),
-                            toObject.getY() + toObject.getPadding() + p2.getY());
                     Vector2D v = end.subtract(start);
                     Vector2D h = v.unitVector().multiply(8 * Math.sqrt(2));
                     Vector2D lineEnd = start.add(v.subtract(h));
