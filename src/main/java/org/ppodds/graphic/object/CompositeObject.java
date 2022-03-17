@@ -1,5 +1,7 @@
 package org.ppodds.graphic.object;
 
+import org.ppodds.core.math.Rectangle;
+
 import java.awt.*;
 
 public class CompositeObject extends UMLObject {
@@ -19,17 +21,14 @@ public class CompositeObject extends UMLObject {
             height = Math.max(height, (o.getY() + o.getHeight()) - y);
         }
         setBounds(x, y, width, height);
+        shape = new Rectangle(getWidth() - padding * 2, getHeight() - padding * 2);
         for (var o : umlObjects) {
             o.setLocation(o.getX() - x, o.getY() - y);
         }
     }
 
     @Override
-    public void paintComponent(Graphics g) {
-        super.paintComponent(g);
-        Graphics2D g2 = (Graphics2D) g;
-        g2.setPaint(Color.BLACK);
-        paintConnectionPorts(g);
-        g.dispose();
+    protected void paintSelf(Graphics g) {
+
     }
 }

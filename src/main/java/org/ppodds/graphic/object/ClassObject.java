@@ -1,5 +1,7 @@
 package org.ppodds.graphic.object;
 
+import org.ppodds.core.math.Rectangle;
+
 import java.awt.*;
 
 public class ClassObject extends UMLObject {
@@ -8,11 +10,11 @@ public class ClassObject extends UMLObject {
         padding = 10;
         setName("");
         setSize(100, 100);
+        shape = new Rectangle(getWidth() - padding * 2, getHeight() - padding * 2);
     }
 
     @Override
-    public void paintComponent(Graphics g) {
-        super.paintComponent(g);
+    protected void paintSelf(Graphics g) {
         Graphics2D g2 = (Graphics2D) g;
         g2.setPaint(Color.LIGHT_GRAY);
         int t1 = getWidth() - padding * 2;
@@ -26,7 +28,5 @@ public class ClassObject extends UMLObject {
         int x = padding + (t1 - metrics.stringWidth(getName())) / 2;
         int y = padding + (((padding + padding + t2 / 3) / 2 - metrics.getHeight()) / 2) + metrics.getAscent();
         g2.drawString(getName(), x, y);
-        paintConnectionPorts(g);
-        g.dispose();
     }
 }

@@ -144,6 +144,17 @@ public class UMLCanvas extends JPanel {
         repaint();
     }
 
+    public void showPreviewObject(UMLObject previewObject) {
+        add(previewObject);
+        setComponentZOrder(previewObject, 0);
+        repaint();
+    }
+
+    public void removePreviewObject(UMLObject previewObject) {
+        remove(previewObject);
+        repaint();
+    }
+
     public void createConnectionLine(ConnectionLine.ConnectionLineType type, UMLObject.ConnectionPortDirection fromConnectionPort, UMLObject.ConnectionPortDirection toConnectionPort, UMLObject fromObject, UMLObject toObject) {
         connectionLineList.add(new ConnectionLine(type, fromConnectionPort, toConnectionPort, fromObject, toObject));
         repaint();

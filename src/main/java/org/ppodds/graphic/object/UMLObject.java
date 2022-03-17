@@ -1,8 +1,6 @@
 package org.ppodds.graphic.object;
 
-import org.ppodds.core.math.Oval;
 import org.ppodds.core.math.Point;
-import org.ppodds.core.math.Rectangle;
 import org.ppodds.core.math.Shape;
 import org.ppodds.graphic.Editor;
 import org.ppodds.graphic.EditorState;
@@ -21,10 +19,12 @@ public abstract class UMLObject extends JComponent {
     protected int padding;
     private boolean isSelected = false;
     private boolean isGrouped = false;
+    protected Shape shape;
     private int beforeMoveX;
     private int beforeMoveY;
     private int beforeMoveXOffset;
     private int beforeMoveYOffset;
+    private PreviewObject movingPreview = null;
 
     public UMLObject(boolean linkable, boolean nameCustomizable) {
         super();
@@ -81,6 +81,8 @@ public abstract class UMLObject extends JComponent {
                         beforeMoveY = o.getY();
                         beforeMoveXOffset = e.getX();
                         beforeMoveYOffset = e.getY();
+                        movingPreview = new PreviewObject(o);
+                        editor.getCanvas().showPreviewObject(movingPreview);
                     } else
                         state.setSelectedObjects(null);
                 } else if ((state.getOperation() == EditorState.EditorOperation.ASSOCIATION_LINE
@@ -133,6 +135,13 @@ public abstract class UMLObject extends JComponent {
                     }
                     UMLObject.creatingConnectionLine = null;
                 }
+                o = topObject(o);
+                if (o.isSelected) {
+                    o.setLocation(movingPreview.getX(), movingPreview.getY());
+                    o.setVisible(true);
+                    editor.getCanvas().removePreviewObject(movingPreview);
+                    movingPreview = null;
+                }
             }
 
             @Override
@@ -145,16 +154,16 @@ public abstract class UMLObject extends JComponent {
 
             }
         });
-
         addMouseMotionListener(new MouseMotionListener() {
             @Override
             public void mouseDragged(MouseEvent e) {
                 UMLObject o = (UMLObject) e.getSource();
                 o = topObject(o);
                 if (o.isSelected) {
-                    o.setLocation(o.beforeMoveX + e.getX() - o.beforeMoveXOffset,
+                    o.setVisible(false);
+                    movingPreview.setVisible(true);
+                    movingPreview.setLocation(o.beforeMoveX + e.getX() - o.beforeMoveXOffset,
                             o.beforeMoveY + e.getY() - o.beforeMoveYOffset);
-                    editor.getCanvas().repaint();
                 }
             }
 
@@ -192,17 +201,11 @@ public abstract class UMLObject extends JComponent {
     }
 
     public Point getConnectionPortOfDirection(ConnectionPortDirection direction) {
-        Shape t;
-        if (this instanceof ClassObject || this instanceof CompositeObject)
-            t = new Rectangle(getWidth() - padding * 2, getHeight() - padding * 2);
-        else
-            t = new Oval(getWidth() - padding * 2, getHeight() - padding * 2);
-
         return switch (direction) {
-            case TOP -> t.getPointOfDirection(Shape.Direction.TOP);
-            case RIGHT -> t.getPointOfDirection(Shape.Direction.RIGHT);
-            case BOTTOM -> t.getPointOfDirection(Shape.Direction.BOTTOM);
-            case LEFT -> t.getPointOfDirection(Shape.Direction.LEFT);
+            case TOP -> shape.getPointOfDirection(Shape.Direction.TOP);
+            case RIGHT -> shape.getPointOfDirection(Shape.Direction.RIGHT);
+            case BOTTOM -> shape.getPointOfDirection(Shape.Direction.BOTTOM);
+            case LEFT -> shape.getPointOfDirection(Shape.Direction.LEFT);
         };
     }
 
@@ -218,22 +221,21 @@ public abstract class UMLObject extends JComponent {
     public void paintComponent(Graphics g) {
         paintChildren(g);
         super.paintComponent(g);
+        paintSelf(g);
+        paintConnectionPorts(g);
+        g.dispose();
     }
+
+    protected abstract void paintSelf(Graphics g);
 
     protected void paintConnectionPorts(Graphics g) {
         Graphics2D g2 = (Graphics2D) g;
         if (isSelected) {
             // connection ports
-            Shape t;
-            if (this instanceof ClassObject || this instanceof CompositeObject)
-                t = new Rectangle(getWidth() - padding * 2, getHeight() - padding * 2);
-            else
-                t = new Oval(getWidth() - padding * 2, getHeight() - padding * 2);
-
-            Point p1 = t.getPointOfDirection(Shape.Direction.LEFT_TOP);
-            Point p2 = t.getPointOfDirection(Shape.Direction.RIGHT_BOTTOM);
-            Point p3 = t.getPointOfDirection(Shape.Direction.RIGHT_TOP);
-            Point p4 = t.getPointOfDirection(Shape.Direction.LEFT_BOTTOM);
+            Point p1 = shape.getPointOfDirection(Shape.Direction.LEFT_TOP);
+            Point p2 = shape.getPointOfDirection(Shape.Direction.RIGHT_BOTTOM);
+            Point p3 = shape.getPointOfDirection(Shape.Direction.RIGHT_TOP);
+            Point p4 = shape.getPointOfDirection(Shape.Direction.LEFT_BOTTOM);
 
             g2.drawLine(p1.getX() + padding,
                     p1.getY() + padding,
@@ -248,10 +250,10 @@ public abstract class UMLObject extends JComponent {
                 int width = (getWidth() - padding * 2) / 20;
                 int height = (getHeight() - padding * 2) / 20;
 
-                Point p5 = t.getPointOfDirection(Shape.Direction.TOP);
-                Point p6 = t.getPointOfDirection(Shape.Direction.BOTTOM);
-                Point p7 = t.getPointOfDirection(Shape.Direction.LEFT);
-                Point p8 = t.getPointOfDirection(Shape.Direction.RIGHT);
+                Point p5 = shape.getPointOfDirection(Shape.Direction.TOP);
+                Point p6 = shape.getPointOfDirection(Shape.Direction.BOTTOM);
+                Point p7 = shape.getPointOfDirection(Shape.Direction.LEFT);
+                Point p8 = shape.getPointOfDirection(Shape.Direction.RIGHT);
 
                 g2.fillRect(p5.getX() + padding - width / 2, p5.getY() + padding - height, width, height);
                 g2.fillRect(p6.getX() + padding - width / 2, p6.getY() + padding, width, height);
