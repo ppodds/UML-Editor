@@ -214,6 +214,12 @@ public abstract class UMLObject extends JComponent {
         isSelected = selected;
     }
 
+    @Override
+    public void paintComponent(Graphics g) {
+        paintChildren(g);
+        super.paintComponent(g);
+    }
+
     protected void paintConnectionPorts(Graphics g) {
         Graphics2D g2 = (Graphics2D) g;
         if (isSelected) {

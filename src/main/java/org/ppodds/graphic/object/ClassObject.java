@@ -12,6 +12,7 @@ public class ClassObject extends UMLObject {
 
     @Override
     public void paintComponent(Graphics g) {
+        super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
         g2.setPaint(Color.LIGHT_GRAY);
         int t1 = getWidth() - padding * 2;
@@ -26,5 +27,6 @@ public class ClassObject extends UMLObject {
         int y = padding + (((padding + padding + t2 / 3) / 2 - metrics.getHeight()) / 2) + metrics.getAscent();
         g2.drawString(getName(), x, y);
         paintConnectionPorts(g);
+        g.dispose();
     }
 }

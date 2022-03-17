@@ -12,6 +12,7 @@ public class UseCaseObject extends UMLObject {
 
     @Override
     public void paintComponent(Graphics g) {
+        super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
         int t1 = getWidth() - 2 * padding;
         int t2 = getHeight() - 2 * padding;
@@ -24,5 +25,6 @@ public class UseCaseObject extends UMLObject {
         int y = padding + ((t2 - metrics.getHeight()) / 2) + metrics.getAscent();
         g2.drawString(getName(), x, y);
         paintConnectionPorts(g);
+        g.dispose();
     }
 }

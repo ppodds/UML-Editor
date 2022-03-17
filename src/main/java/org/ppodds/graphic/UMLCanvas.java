@@ -103,7 +103,9 @@ public class UMLCanvas extends JPanel {
         if (selectedObjects != null && selectedObjects.length > 1) {
             for (var o : selectedObjects)
                 remove(o);
-            add(new CompositeObject(selectedObjects));
+            CompositeObject obj = new CompositeObject(selectedObjects);
+            add(obj);
+            setComponentZOrder(obj, 0);
             repaint();
         }
     }
@@ -118,6 +120,7 @@ public class UMLCanvas extends JPanel {
             for (var child : o.getComponents()) {
                 o.remove(child);
                 add(child);
+                setComponentZOrder(child, 0);
                 child.setLocation(x + child.getX(), y + child.getY());
                 ((UMLObject) child).setGrouped(false);
             }
@@ -129,16 +132,21 @@ public class UMLCanvas extends JPanel {
         if (obj instanceof CompositeObject)
             return;
         obj.setName(name);
+        setComponentZOrder(obj, 0);
         repaint();
     }
 
     public void createClassObject(int x, int y) {
-        add(new ClassObject(x, y));
+        ClassObject obj = new ClassObject(x, y);
+        add(obj);
+        setComponentZOrder(obj, 0);
         repaint();
     }
 
     public void createUseCaseObject(int x, int y) {
-        add(new UseCaseObject(x, y));
+        UseCaseObject obj = new UseCaseObject(x, y);
+        add(obj);
+        setComponentZOrder(obj, 0);
         repaint();
     }
 
@@ -150,6 +158,7 @@ public class UMLCanvas extends JPanel {
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
+        paintChildren(g);
         Graphics2D g2 = (Graphics2D) g;
         g2.setPaint(Color.BLACK);
         g2.drawRect(0, 0, getWidth(), getHeight());
@@ -198,8 +207,8 @@ public class UMLCanvas extends JPanel {
                     g2.draw(new Diamond(lineEnd, h));
                 }
             }
-
         }
+        g.dispose();
     }
 
     private class Arrow extends Path2D.Double {
