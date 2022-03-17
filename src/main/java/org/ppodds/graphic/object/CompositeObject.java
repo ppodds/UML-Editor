@@ -4,9 +4,7 @@ import java.awt.*;
 
 public class CompositeObject extends UMLObject {
     public CompositeObject(UMLObject[] umlObjects) {
-        super();
-        linkable = false;
-        nameCustomizable = false;
+        super(false, false);
         setOpaque(false);
         // 540 <- default size of canvas
         int x = 540, y = 540, width = 0, height = 0;

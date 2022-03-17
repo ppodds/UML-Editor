@@ -21,8 +21,8 @@ public abstract class UMLObject extends UMLBaseObject {
     private int beforeMoveXOffset;
     private int beforeMoveYOffset;
 
-    protected boolean linkable = true;
-    protected boolean nameCustomizable = true;
+    protected final boolean linkable;
+    protected final boolean nameCustomizable;
 
     public boolean isLinkable() {
         return linkable;
@@ -156,13 +156,17 @@ public abstract class UMLObject extends UMLBaseObject {
         });
     }
 
-    public UMLObject() {
+    public UMLObject(boolean linkable, boolean nameCustomizable) {
         super();
+        this.linkable = linkable;
+        this.nameCustomizable = nameCustomizable;
         init();
     }
 
-    public UMLObject(int x, int y) {
+    public UMLObject(boolean linkable, boolean nameCustomizable, int x, int y) {
         super();
+        this.linkable = linkable;
+        this.nameCustomizable = nameCustomizable;
         setLocation(x, y);
         init();
     }

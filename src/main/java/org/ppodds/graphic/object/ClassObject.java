@@ -4,10 +4,8 @@ import java.awt.*;
 
 public class ClassObject extends UMLObject {
     public ClassObject(int x, int y) {
-        super(x, y);
+        super(true, true, x, y);
         padding = 10;
-        linkable = true;
-        nameCustomizable = true;
         setName("");
         setSize(100, 100);
     }

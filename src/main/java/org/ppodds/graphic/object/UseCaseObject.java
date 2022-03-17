@@ -4,9 +4,7 @@ import java.awt.*;
 
 public class UseCaseObject extends UMLObject {
     public UseCaseObject(int x, int y) {
-        super(x, y);
-        linkable = true;
-        nameCustomizable = true;
+        super(true, true, x, y);
         padding = 10;
         setName("");
         setSize(150, 100);
