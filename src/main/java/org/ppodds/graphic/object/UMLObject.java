@@ -112,7 +112,7 @@ public abstract class UMLObject extends JComponent {
 
                     UMLObject toObject = null;
                     for (var c : editor.getCanvas().getComponents()) {
-                        if (linkable) {
+                        if (((UMLObject) c).linkable) {
                             // check if the mouse in the object
                             if (x > c.getX() && x < c.getX() + c.getWidth()
                                     && y > c.getY() && y < c.getY() + c.getHeight()) {
