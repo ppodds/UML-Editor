@@ -7,22 +7,51 @@ import org.ppodds.core.math.Shape;
 import org.ppodds.graphic.Editor;
 import org.ppodds.graphic.EditorState;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 
-public abstract class UMLObject extends UMLBaseObject {
+public abstract class UMLObject extends JComponent {
+    private static CreatingConnectionLine creatingConnectionLine = null;
+    protected final boolean linkable;
+    protected final boolean nameCustomizable;
+    private final Editor editor;
+    protected int padding;
     private boolean isSelected = false;
     private boolean isGrouped = false;
-
     private int beforeMoveX;
     private int beforeMoveY;
     private int beforeMoveXOffset;
     private int beforeMoveYOffset;
 
-    protected final boolean linkable;
-    protected final boolean nameCustomizable;
+    public UMLObject(boolean linkable, boolean nameCustomizable) {
+        super();
+        editor = Editor.getInstance();
+        this.linkable = linkable;
+        this.nameCustomizable = nameCustomizable;
+        init();
+    }
+
+    public UMLObject(boolean linkable, boolean nameCustomizable, int x, int y) {
+        super();
+        editor = Editor.getInstance();
+        this.linkable = linkable;
+        this.nameCustomizable = nameCustomizable;
+        setLocation(x, y);
+        init();
+    }
+
+    private static UMLObject topObject(UMLObject o) {
+        if (o.isGrouped) {
+            o = (UMLObject) o.getParent();
+            while (o.isGrouped) {
+                o = (UMLObject) o.getParent();
+            }
+        }
+        return o;
+    }
 
     public boolean isLinkable() {
         return linkable;
@@ -31,8 +60,6 @@ public abstract class UMLObject extends UMLBaseObject {
     public boolean isNameCustomizable() {
         return nameCustomizable;
     }
-
-    private static CreatingConnectionLine creatingConnectionLine = null;
 
     private void init() {
         addMouseListener(new MouseListener() {
@@ -156,37 +183,12 @@ public abstract class UMLObject extends UMLBaseObject {
         });
     }
 
-    public UMLObject(boolean linkable, boolean nameCustomizable) {
-        super();
-        this.linkable = linkable;
-        this.nameCustomizable = nameCustomizable;
-        init();
-    }
-
-    public UMLObject(boolean linkable, boolean nameCustomizable, int x, int y) {
-        super();
-        this.linkable = linkable;
-        this.nameCustomizable = nameCustomizable;
-        setLocation(x, y);
-        init();
-    }
-
     public boolean isGrouped() {
         return isGrouped;
     }
 
     public void setGrouped(boolean grouped) {
         isGrouped = grouped;
-    }
-
-    private static UMLObject topObject(UMLObject o) {
-        if (o.isGrouped) {
-            o = (UMLObject) o.getParent();
-            while (o.isGrouped) {
-                o = (UMLObject) o.getParent();
-            }
-        }
-        return o;
     }
 
     public Point getConnectionPortOfDirection(ConnectionPortDirection direction) {
@@ -267,6 +269,10 @@ public abstract class UMLObject extends UMLBaseObject {
             return ConnectionPortDirection.RIGHT;
         else
             return ConnectionPortDirection.LEFT;
+    }
+
+    public int getPadding() {
+        return padding;
     }
 
     public enum ConnectionPortDirection {
