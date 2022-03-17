@@ -12,7 +12,6 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 
 public abstract class UMLObject extends JComponent {
-    private static CreatingConnectionLine creatingConnectionLine = null;
     protected final boolean linkable;
     protected final boolean nameCustomizable;
     private final Editor editor;
@@ -89,14 +88,7 @@ public abstract class UMLObject extends JComponent {
                         || state.getOperation() == EditorState.EditorOperation.GENERALIZATION_LINE
                         || state.getOperation() == EditorState.EditorOperation.COMPOSITION_LINE)
                         && !o.isGrouped && linkable) {
-                    var t = new CreatingConnectionLine();
-                    switch (state.getOperation()) {
-                        case ASSOCIATION_LINE -> t.type = ConnectionLine.ConnectionLineType.ASSOCIATION_LINE;
-                        case GENERALIZATION_LINE -> t.type = ConnectionLine.ConnectionLineType.GENERALIZATION_LINE;
-                        case COMPOSITION_LINE -> t.type = ConnectionLine.ConnectionLineType.COMPOSITION_LINE;
-                    }
-                    t.fromConnectionPort = getConnectionPortDirection(e.getX(), e.getY());
-                    UMLObject.creatingConnectionLine = t;
+                    state.createCreatingConnectionLine(getConnectionPortDirection(e.getX(), e.getY()));
                 }
             }
 
@@ -104,7 +96,7 @@ public abstract class UMLObject extends JComponent {
             public void mouseReleased(MouseEvent e) {
                 UMLObject o = (UMLObject) e.getSource();
                 EditorState state = editor.getState();
-                if (UMLObject.creatingConnectionLine != null
+                if (state.getCreatingConnectionLine() != null
                         && (state.getOperation() == EditorState.EditorOperation.ASSOCIATION_LINE
                         || state.getOperation() == EditorState.EditorOperation.GENERALIZATION_LINE
                         || state.getOperation() == EditorState.EditorOperation.COMPOSITION_LINE)
@@ -125,7 +117,7 @@ public abstract class UMLObject extends JComponent {
                         }
                     }
                     if (toObject != null) {
-                        var t = UMLObject.creatingConnectionLine;
+                        var t = state.getCreatingConnectionLine();
                         editor.getCanvas().createConnectionLine(t.type,
                                 t.fromConnectionPort,
                                 toObject.getConnectionPortDirection(
@@ -133,7 +125,6 @@ public abstract class UMLObject extends JComponent {
                                         y - toObject.getY()),
                                 o, toObject);
                     }
-                    UMLObject.creatingConnectionLine = null;
                 }
                 o = topObject(o);
                 if (o.isSelected) {
@@ -142,6 +133,7 @@ public abstract class UMLObject extends JComponent {
                     editor.getCanvas().removePreviewObject(movingPreview);
                     movingPreview = null;
                 }
+                state.removeCreatingConnectionLine();
             }
 
             @Override
@@ -285,10 +277,5 @@ public abstract class UMLObject extends JComponent {
 
     public enum ConnectionPortDirection {
         TOP, RIGHT, BOTTOM, LEFT
-    }
-
-    private class CreatingConnectionLine {
-        public ConnectionLine.ConnectionLineType type;
-        public UMLObject.ConnectionPortDirection fromConnectionPort;
     }
 }
