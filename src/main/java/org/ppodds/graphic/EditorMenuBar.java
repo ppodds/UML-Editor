@@ -1,6 +1,5 @@
 package org.ppodds.graphic;
 
-import org.ppodds.graphic.object.CompositeObject;
 import org.ppodds.graphic.object.UMLObject;
 
 import javax.swing.*;
@@ -29,7 +28,7 @@ public class EditorMenuBar extends JMenuBar {
             UMLObject[] selectedObjects = editor.getState().getSelectedObjects();
             if (selectedObjects != null
                     && selectedObjects.length == 1
-                    && !(selectedObjects[0] instanceof CompositeObject)) {
+                    && selectedObjects[0].isNameCustomizable()) {
                 new ChangeObjectNameFrame(selectedObjects[0]);
             }
         });

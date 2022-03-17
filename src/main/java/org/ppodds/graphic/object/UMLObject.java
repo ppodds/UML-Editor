@@ -21,6 +21,17 @@ public abstract class UMLObject extends UMLBaseObject {
     private int beforeMoveXOffset;
     private int beforeMoveYOffset;
 
+    protected boolean linkable = true;
+    protected boolean nameCustomizable = true;
+
+    public boolean isLinkable() {
+        return linkable;
+    }
+
+    public boolean isNameCustomizable() {
+        return nameCustomizable;
+    }
+
     private static CreatingConnectionLine creatingConnectionLine = null;
 
     private void init() {
@@ -48,7 +59,7 @@ public abstract class UMLObject extends UMLBaseObject {
                 } else if ((state.getOperation() == EditorState.EditorOperation.ASSOCIATION_LINE
                         || state.getOperation() == EditorState.EditorOperation.GENERALIZATION_LINE
                         || state.getOperation() == EditorState.EditorOperation.COMPOSITION_LINE)
-                        && !o.isGrouped && !(o instanceof CompositeObject)) {
+                        && !o.isGrouped && linkable) {
                     var t = new CreatingConnectionLine();
                     switch (state.getOperation()) {
                         case ASSOCIATION_LINE -> t.type = ConnectionLine.ConnectionLineType.ASSOCIATION_LINE;
@@ -74,7 +85,7 @@ public abstract class UMLObject extends UMLBaseObject {
 
                     UMLObject toObject = null;
                     for (var c : editor.getCanvas().getComponents()) {
-                        if (c instanceof ClassObject || c instanceof UseCaseObject) {
+                        if (linkable) {
                             // check if the mouse in the object
                             if (x > c.getX() && x < c.getX() + c.getWidth()
                                     && y > c.getY() && y < c.getY() + c.getHeight()) {
@@ -83,9 +94,6 @@ public abstract class UMLObject extends UMLBaseObject {
                                 }
                             }
                         }
-//                        else {
-//
-//                        }
                     }
                     if (toObject != null) {
                         var t = UMLObject.creatingConnectionLine;
@@ -224,18 +232,20 @@ public abstract class UMLObject extends UMLBaseObject {
                     p4.getX() + padding,
                     p4.getY() + padding);
 
-            int width = (getWidth() - padding * 2) / 20;
-            int height = (getHeight() - padding * 2) / 20;
+            if (linkable) {
+                int width = (getWidth() - padding * 2) / 20;
+                int height = (getHeight() - padding * 2) / 20;
 
-            Point p5 = t.getPointOfDirection(Shape.Direction.TOP);
-            Point p6 = t.getPointOfDirection(Shape.Direction.BOTTOM);
-            Point p7 = t.getPointOfDirection(Shape.Direction.LEFT);
-            Point p8 = t.getPointOfDirection(Shape.Direction.RIGHT);
+                Point p5 = t.getPointOfDirection(Shape.Direction.TOP);
+                Point p6 = t.getPointOfDirection(Shape.Direction.BOTTOM);
+                Point p7 = t.getPointOfDirection(Shape.Direction.LEFT);
+                Point p8 = t.getPointOfDirection(Shape.Direction.RIGHT);
 
-            g2.fillRect(p5.getX() + padding - width / 2, p5.getY() + padding - height, width, height);
-            g2.fillRect(p6.getX() + padding - width / 2, p6.getY() + padding, width, height);
-            g2.fillRect(p7.getX() + padding - width, p7.getY() + padding - height / 2, width, height);
-            g2.fillRect(p8.getX() + padding, p8.getY() + padding - height / 2, width, height);
+                g2.fillRect(p5.getX() + padding - width / 2, p5.getY() + padding - height, width, height);
+                g2.fillRect(p6.getX() + padding - width / 2, p6.getY() + padding, width, height);
+                g2.fillRect(p7.getX() + padding - width, p7.getY() + padding - height / 2, width, height);
+                g2.fillRect(p8.getX() + padding, p8.getY() + padding - height / 2, width, height);
+            }
         }
     }
 
