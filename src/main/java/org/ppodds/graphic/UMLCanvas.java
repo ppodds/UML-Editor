@@ -53,6 +53,7 @@ public class UMLCanvas extends JPanel {
                     // create select area
                     selectedArea = new SelectedArea(e.getX(), e.getY());
                     add(selectedArea);
+                    setComponentZOrder(selectedArea, 0);
                     selectedArea.repaint();
                 }
             }
