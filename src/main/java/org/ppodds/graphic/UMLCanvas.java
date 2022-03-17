@@ -30,7 +30,6 @@ public class UMLCanvas extends JPanel {
         addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                System.out.println("clicked");
             }
 
             @Override
@@ -56,7 +55,6 @@ public class UMLCanvas extends JPanel {
                     add(selectedArea);
                     selectedArea.repaint();
                 }
-                System.out.println("pressed");
             }
 
             @Override
@@ -69,17 +67,14 @@ public class UMLCanvas extends JPanel {
                     selectedArea = null;
                     repaint();
                 }
-                System.out.println("released");
             }
 
             @Override
             public void mouseEntered(MouseEvent e) {
-                System.out.println("entered");
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
-                System.out.println("exited");
             }
         });
         addMouseMotionListener(new MouseMotionListener() {
@@ -88,12 +83,10 @@ public class UMLCanvas extends JPanel {
                 if (editor.getState().getOperation() == EditorState.EditorOperation.SELECT && selectedArea != null) {
                     selectedArea.selecting(Math.max(e.getX(), 0), Math.max(e.getY(), 0));
                 }
-                System.out.println("dragged");
             }
 
             @Override
             public void mouseMoved(MouseEvent e) {
-                System.out.println("moved");
             }
         });
     }
