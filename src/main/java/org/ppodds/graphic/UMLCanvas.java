@@ -19,12 +19,14 @@ public class UMLCanvas extends JPanel {
     private final Editor editor;
     private SelectedArea selectedArea;
     private final List<ConnectionLine> connectionLineList;
+    public static final int WIDTH = 540;
+    public static final int HEIGHT = 540;
 
     public UMLCanvas() {
-        super(new UMLCanvasLayout());
+        super(null);
         editor = Editor.getInstance();
         connectionLineList = new LinkedList<>();
-        setPreferredSize(new Dimension(540, 540));
+        setPreferredSize(new Dimension(WIDTH, HEIGHT));
         addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -108,7 +110,8 @@ public class UMLCanvas extends JPanel {
                 && selectedObjects[0] instanceof CompositeObject) {
             CompositeObject o = (CompositeObject) selectedObjects[0];
             remove(o);
-            int x = o.getX(), y = o.getY();
+            int x = o.getX();
+            int y = o.getY();
             for (var child : o.getComponents()) {
                 o.remove(child);
                 add(child);

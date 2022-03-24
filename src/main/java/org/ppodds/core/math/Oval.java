@@ -18,8 +18,8 @@ public class Oval extends Shape {
     }
 
     public Point getPointOfAngle(int degree) {
-        return new Point(width / 2 + (int) (width / 2 * java.lang.Math.cos(java.lang.Math.toRadians(degree))),
-                height / 2 - (int) (height / 2 * java.lang.Math.sin(java.lang.Math.toRadians(degree))));
+        return new Point(width / 2 + (int) (width / 2 * Math.cos(Math.toRadians(degree))),
+                height / 2 - (int) (height / 2 * Math.sin(Math.toRadians(degree))));
     }
 
     @Override

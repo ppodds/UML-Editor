@@ -30,14 +30,12 @@ public abstract class UMLObject extends JComponent {
         init();
     }
 
-    private static UMLObject topObject(UMLObject o) {
-        if (o.isGrouped) {
-            o = (UMLObject) o.getParent();
-            while (o.isGrouped) {
-                o = (UMLObject) o.getParent();
-            }
+    private UMLObject topObject() {
+        UMLObject topObject = this;
+        while (topObject.isGrouped) {
+            topObject = (UMLObject) topObject.getParent();
         }
-        return o;
+        return topObject;
     }
 
     public boolean isLinkable() {
@@ -60,13 +58,13 @@ public abstract class UMLObject extends JComponent {
                 UMLObject o = (UMLObject) e.getSource();
                 EditorState state = Editor.getInstance().getState();
                 if (state.getOperation() == EditorState.EditorOperation.SELECT) {
-                    o = topObject(o);
-                    o.isSelected = !o.isSelected;
-                    if (o.isSelected) {
-                        state.setSelectedObjects(new UMLObject[]{o});
-                        beforeMovePosition = new Point(o.getX(), o.getY());
+                    UMLObject topObject = o.topObject();
+                    topObject.isSelected = !topObject.isSelected;
+                    if (topObject.isSelected) {
+                        state.setSelectedObjects(new UMLObject[]{topObject});
+                        beforeMovePosition = new Point(topObject.getX(), topObject.getY());
                         beforeMoveOffset = new Point(e.getX(), e.getY());
-                        movingPreview = new PreviewObject(o);
+                        movingPreview = new PreviewObject(topObject);
                         Editor.getInstance().getCanvas().showPreviewObject(movingPreview);
                     } else
                         state.setSelectedObjects(null);
@@ -76,10 +74,10 @@ public abstract class UMLObject extends JComponent {
             @Override
             public void mouseReleased(MouseEvent e) {
                 UMLObject o = (UMLObject) e.getSource();
-                o = topObject(o);
-                if (o.isSelected) {
-                    o.setLocation(movingPreview.getX(), movingPreview.getY());
-                    o.setVisible(true);
+                UMLObject topObject = o.topObject();
+                if (topObject.isSelected) {
+                    topObject.setLocation(movingPreview.getX(), movingPreview.getY());
+                    topObject.setVisible(true);
                     Editor.getInstance().getCanvas().removePreviewObject(movingPreview);
                     movingPreview = null;
                 }
@@ -99,12 +97,12 @@ public abstract class UMLObject extends JComponent {
             @Override
             public void mouseDragged(MouseEvent e) {
                 UMLObject o = (UMLObject) e.getSource();
-                o = topObject(o);
-                if (o.isSelected) {
-                    o.setVisible(false);
+                UMLObject topObject = o.topObject();
+                if (topObject.isSelected) {
+                    topObject.setVisible(false);
                     movingPreview.setVisible(true);
-                    movingPreview.setLocation(o.beforeMovePosition.getX() + e.getX() - o.beforeMoveOffset.getX(),
-                            o.beforeMovePosition.getY() + e.getY() - o.beforeMoveOffset.getY());
+                    movingPreview.setLocation(topObject.beforeMovePosition.getX() + e.getX() - topObject.beforeMoveOffset.getX(),
+                            topObject.beforeMovePosition.getY() + e.getY() - topObject.beforeMoveOffset.getY());
                 }
             }
 
