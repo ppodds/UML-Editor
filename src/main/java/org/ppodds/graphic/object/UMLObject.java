@@ -62,10 +62,10 @@ public abstract class UMLObject extends JComponent {
                     topObject.isSelected = !topObject.isSelected;
                     if (topObject.isSelected) {
                         state.setSelectedObjects(new UMLObject[]{topObject});
-                        beforeMovePosition = new Point(topObject.getX(), topObject.getY());
-                        beforeMoveOffset = new Point(e.getX(), e.getY());
-                        movingPreview = new PreviewObject(topObject);
-                        Editor.getInstance().getCanvas().showPreviewObject(movingPreview);
+                        topObject.beforeMovePosition = new Point(topObject.getX(), topObject.getY());
+                        topObject.beforeMoveOffset = new Point(e.getX(), e.getY());
+                        topObject.movingPreview = new PreviewObject(topObject);
+                        Editor.getInstance().getCanvas().showPreviewObject(topObject.movingPreview);
                     } else
                         state.setSelectedObjects(null);
                 }
@@ -76,10 +76,10 @@ public abstract class UMLObject extends JComponent {
                 UMLObject o = (UMLObject) e.getSource();
                 UMLObject topObject = o.topObject();
                 if (topObject.isSelected) {
-                    topObject.setLocation(movingPreview.getX(), movingPreview.getY());
+                    topObject.setLocation(topObject.movingPreview.getX(), topObject.movingPreview.getY());
                     topObject.setVisible(true);
-                    Editor.getInstance().getCanvas().removePreviewObject(movingPreview);
-                    movingPreview = null;
+                    Editor.getInstance().getCanvas().removePreviewObject(topObject.movingPreview);
+                    topObject.movingPreview = null;
                 }
             }
 
@@ -100,8 +100,8 @@ public abstract class UMLObject extends JComponent {
                 UMLObject topObject = o.topObject();
                 if (topObject.isSelected) {
                     topObject.setVisible(false);
-                    movingPreview.setVisible(true);
-                    movingPreview.setLocation(topObject.beforeMovePosition.getX() + e.getX() - topObject.beforeMoveOffset.getX(),
+                    topObject.movingPreview.setVisible(true);
+                    topObject.movingPreview.setLocation(topObject.beforeMovePosition.getX() + e.getX() - topObject.beforeMoveOffset.getX(),
                             topObject.beforeMovePosition.getY() + e.getY() - topObject.beforeMoveOffset.getY());
                 }
             }
