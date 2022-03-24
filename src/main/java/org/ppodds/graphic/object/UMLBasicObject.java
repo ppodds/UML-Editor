@@ -46,23 +46,21 @@ public abstract class UMLBasicObject extends UMLObject {
                 UMLBasicObject o = (UMLBasicObject) e.getSource();
                 EditorState state = Editor.getInstance().getState();
                 if (state.getCreatingConnectionLine() != null
-                        && state.getCreatingConnectionLine().originObject != o
                         && (state.getOperation() == EditorState.EditorOperation.ASSOCIATION_LINE
                         || state.getOperation() == EditorState.EditorOperation.GENERALIZATION_LINE
                         || state.getOperation() == EditorState.EditorOperation.COMPOSITION_LINE)
                         && !o.isGrouped()) {
                     int x = o.getX() + e.getX();
                     int y = o.getY() + e.getY();
-                    UMLObject toObject = getObjectOn(x, y);
-                    if (toObject != null && toObject.isLinkable()) {
-                        assert toObject instanceof UMLBasicObject : "Linkable UMLObject must be an instance of UMLBasicObject";
+                    UMLBasicObject toObject = getLinkableObjectOn(x, y);
+                    if (toObject != null && state.getCreatingConnectionLine().originObject != toObject) {
                         var t = state.getCreatingConnectionLine();
                         Editor.getInstance().getCanvas().createConnectionLine(t.type,
                                 t.fromConnectionPort,
-                                ((UMLBasicObject) toObject).getConnectionPortDirection(
+                                toObject.getConnectionPortDirection(
                                         x - toObject.getX(),
                                         y - toObject.getY()),
-                                o, (UMLBasicObject) toObject);
+                                o, toObject);
                     }
                 }
                 state.removeCreatingConnectionLine();
@@ -80,16 +78,16 @@ public abstract class UMLBasicObject extends UMLObject {
         });
     }
 
-    private UMLObject getObjectOn(int x, int y) {
-        UMLObject o = null;
+    private UMLBasicObject getLinkableObjectOn(int x, int y) {
+        UMLBasicObject o = null;
         for (var c : Editor.getInstance().getCanvas().getComponents()) {
             assert c instanceof UMLObject : "Children of canvas must be instance of UMLObject";
             // check if the mouse in the object
             if (x > c.getX() && x < c.getX() + c.getWidth()
-                    && y > c.getY() && y < c.getY() + c.getHeight()) {
-                if (o == null) {
-                    o = (UMLObject) c;
-                }
+                    && y > c.getY() && y < c.getY() + c.getHeight() && ((UMLObject) c).isLinkable()) {
+                assert c instanceof UMLBasicObject : "Linkable UMLObject must be an instance of UMLBasicObject";
+                o = (UMLBasicObject) c;
+                break;
             }
         }
         return o;
