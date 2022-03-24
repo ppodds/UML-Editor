@@ -2,20 +2,21 @@ package org.ppodds.graphic.line;
 
 import org.ppodds.core.math.Point;
 import org.ppodds.core.math.Vector2D;
+import org.ppodds.graphic.object.UMLBasicObject;
 import org.ppodds.graphic.object.UMLObject;
 
 import java.awt.*;
 
 public abstract class ConnectionLine {
-    private final UMLObject.ConnectionPortDirection fromConnectionPort;
-    private final UMLObject.ConnectionPortDirection toConnectionPort;
-    private final UMLObject fromObject;
-    private final UMLObject toObject;
+    private final UMLBasicObject.ConnectionPortDirection fromConnectionPort;
+    private final UMLBasicObject.ConnectionPortDirection toConnectionPort;
+    private final UMLBasicObject fromObject;
+    private final UMLBasicObject toObject;
     protected Vector2D arrowStartPoint;
     protected Vector2D arrowEndPoint;
     private final ConnectionLineType type;
 
-    public ConnectionLine(ConnectionLineType type, UMLObject.ConnectionPortDirection fromConnectionPort, UMLObject.ConnectionPortDirection toConnectionPort, UMLObject fromObject, UMLObject toObject) {
+    public ConnectionLine(ConnectionLineType type, UMLBasicObject.ConnectionPortDirection fromConnectionPort, UMLBasicObject.ConnectionPortDirection toConnectionPort, UMLBasicObject fromObject, UMLBasicObject toObject) {
         this.type = type;
         this.fromConnectionPort = fromConnectionPort;
         this.toConnectionPort = toConnectionPort;
@@ -23,19 +24,19 @@ public abstract class ConnectionLine {
         this.toObject = toObject;
     }
 
-    public UMLObject.ConnectionPortDirection getFromConnectionPort() {
+    public UMLBasicObject.ConnectionPortDirection getFromConnectionPort() {
         return fromConnectionPort;
     }
 
-    public UMLObject.ConnectionPortDirection getToConnectionPort() {
+    public UMLBasicObject.ConnectionPortDirection getToConnectionPort() {
         return toConnectionPort;
     }
 
-    public UMLObject getFromObject() {
+    public UMLBasicObject getFromObject() {
         return fromObject;
     }
 
-    public UMLObject getToObject() {
+    public UMLBasicObject getToObject() {
         return toObject;
     }
 

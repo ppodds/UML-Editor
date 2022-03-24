@@ -1,10 +1,7 @@
 package org.ppodds.graphic;
 
 import org.ppodds.graphic.line.*;
-import org.ppodds.graphic.object.ClassObject;
-import org.ppodds.graphic.object.CompositeObject;
-import org.ppodds.graphic.object.UMLObject;
-import org.ppodds.graphic.object.UseCaseObject;
+import org.ppodds.graphic.object.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -156,7 +153,7 @@ public class UMLCanvas extends JPanel {
         repaint();
     }
 
-    public void createConnectionLine(ConnectionLineType type, UMLObject.ConnectionPortDirection fromConnectionPort, UMLObject.ConnectionPortDirection toConnectionPort, UMLObject fromObject, UMLObject toObject) {
+    public void createConnectionLine(ConnectionLineType type, UMLBasicObject.ConnectionPortDirection fromConnectionPort, UMLBasicObject.ConnectionPortDirection toConnectionPort, UMLBasicObject fromObject, UMLBasicObject toObject) {
         switch (type) {
             case ASSOCIATION_LINE -> connectionLineList.add(new AssociationLine(fromConnectionPort, toConnectionPort, fromObject, toObject));
             case GENERALIZATION_LINE -> connectionLineList.add(new GeneralizationLine(fromConnectionPort, toConnectionPort, fromObject, toObject));

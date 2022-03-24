@@ -2,6 +2,7 @@ package org.ppodds.graphic;
 
 import org.ppodds.core.event.ChangeEvent;
 import org.ppodds.graphic.line.ConnectionLineType;
+import org.ppodds.graphic.object.UMLBasicObject;
 import org.ppodds.graphic.object.UMLObject;
 
 public class EditorState {
@@ -29,7 +30,7 @@ public class EditorState {
         return creatingConnectionLine;
     }
 
-    public void createCreatingConnectionLine(UMLObject.ConnectionPortDirection fromConnectionPort) {
+    public void createCreatingConnectionLine(UMLBasicObject originObject, UMLBasicObject.ConnectionPortDirection fromConnectionPort) {
         ConnectionLineType type;
         switch (operation) {
             case ASSOCIATION_LINE -> type = ConnectionLineType.ASSOCIATION_LINE;
@@ -37,7 +38,7 @@ public class EditorState {
             case COMPOSITION_LINE -> type = ConnectionLineType.COMPOSITION_LINE;
             default -> throw new IllegalStateException("Unexpected value: " + operation);
         }
-        creatingConnectionLine = new CreatingConnectionLine(type, fromConnectionPort);
+        creatingConnectionLine = new CreatingConnectionLine(type, originObject, fromConnectionPort);
         publishEvent();
     }
 
@@ -67,11 +68,13 @@ public class EditorState {
 
     public class CreatingConnectionLine {
         public final ConnectionLineType type;
-        public final UMLObject.ConnectionPortDirection fromConnectionPort;
+        public final UMLBasicObject originObject;
+        public final UMLBasicObject.ConnectionPortDirection fromConnectionPort;
 
-        public CreatingConnectionLine(ConnectionLineType type,
-                                      UMLObject.ConnectionPortDirection fromConnectionPort) {
+        public CreatingConnectionLine(ConnectionLineType type, UMLBasicObject originObject,
+                                      UMLBasicObject.ConnectionPortDirection fromConnectionPort) {
             this.type = type;
+            this.originObject = originObject;
             this.fromConnectionPort = fromConnectionPort;
         }
     }

@@ -1,6 +1,5 @@
 package org.ppodds.graphic.object;
 
-import org.ppodds.core.math.Point;
 import org.ppodds.core.math.Shape;
 import org.ppodds.graphic.Editor;
 import org.ppodds.graphic.EditorState;
@@ -12,33 +11,23 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 
 public abstract class UMLObject extends JComponent {
-    protected final boolean linkable;
-    protected final boolean nameCustomizable;
-    private final Editor editor;
-    protected int padding;
+    private final boolean nameCustomizable;
+    private final boolean linkable;
+    private final int padding;
+    protected Shape shape;
     private boolean isSelected = false;
     private boolean isGrouped = false;
-    protected Shape shape;
     private int beforeMoveX;
     private int beforeMoveY;
     private int beforeMoveXOffset;
     private int beforeMoveYOffset;
     private PreviewObject movingPreview = null;
 
-    public UMLObject(boolean linkable, boolean nameCustomizable) {
+    public UMLObject(boolean linkable, boolean nameCustomizable, int padding) {
         super();
-        editor = Editor.getInstance();
         this.linkable = linkable;
         this.nameCustomizable = nameCustomizable;
-        init();
-    }
-
-    public UMLObject(boolean linkable, boolean nameCustomizable, int x, int y) {
-        super();
-        editor = Editor.getInstance();
-        this.linkable = linkable;
-        this.nameCustomizable = nameCustomizable;
-        setLocation(x, y);
+        this.padding = padding;
         init();
     }
 
@@ -70,7 +59,7 @@ public abstract class UMLObject extends JComponent {
             @Override
             public void mousePressed(MouseEvent e) {
                 UMLObject o = (UMLObject) e.getSource();
-                EditorState state = editor.getState();
+                EditorState state = Editor.getInstance().getState();
                 if (state.getOperation() == EditorState.EditorOperation.SELECT) {
                     o = topObject(o);
                     o.isSelected = !o.isSelected;
@@ -81,59 +70,22 @@ public abstract class UMLObject extends JComponent {
                         beforeMoveXOffset = e.getX();
                         beforeMoveYOffset = e.getY();
                         movingPreview = new PreviewObject(o);
-                        editor.getCanvas().showPreviewObject(movingPreview);
+                        Editor.getInstance().getCanvas().showPreviewObject(movingPreview);
                     } else
                         state.setSelectedObjects(null);
-                } else if ((state.getOperation() == EditorState.EditorOperation.ASSOCIATION_LINE
-                        || state.getOperation() == EditorState.EditorOperation.GENERALIZATION_LINE
-                        || state.getOperation() == EditorState.EditorOperation.COMPOSITION_LINE)
-                        && !o.isGrouped && linkable) {
-                    state.createCreatingConnectionLine(getConnectionPortDirection(e.getX(), e.getY()));
                 }
             }
 
             @Override
             public void mouseReleased(MouseEvent e) {
                 UMLObject o = (UMLObject) e.getSource();
-                EditorState state = editor.getState();
-                if (state.getCreatingConnectionLine() != null
-                        && (state.getOperation() == EditorState.EditorOperation.ASSOCIATION_LINE
-                        || state.getOperation() == EditorState.EditorOperation.GENERALIZATION_LINE
-                        || state.getOperation() == EditorState.EditorOperation.COMPOSITION_LINE)
-                        && !o.isGrouped) {
-                    int x = o.getX() + e.getX();
-                    int y = o.getY() + e.getY();
-
-                    UMLObject toObject = null;
-                    for (var c : editor.getCanvas().getComponents()) {
-                        if (((UMLObject) c).linkable) {
-                            // check if the mouse in the object
-                            if (x > c.getX() && x < c.getX() + c.getWidth()
-                                    && y > c.getY() && y < c.getY() + c.getHeight()) {
-                                if (toObject == null) {
-                                    toObject = (UMLObject) c;
-                                }
-                            }
-                        }
-                    }
-                    if (toObject != null) {
-                        var t = state.getCreatingConnectionLine();
-                        editor.getCanvas().createConnectionLine(t.type,
-                                t.fromConnectionPort,
-                                toObject.getConnectionPortDirection(
-                                        x - toObject.getX(),
-                                        y - toObject.getY()),
-                                o, toObject);
-                    }
-                }
                 o = topObject(o);
                 if (o.isSelected) {
                     o.setLocation(movingPreview.getX(), movingPreview.getY());
                     o.setVisible(true);
-                    editor.getCanvas().removePreviewObject(movingPreview);
+                    Editor.getInstance().getCanvas().removePreviewObject(movingPreview);
                     movingPreview = null;
                 }
-                state.removeCreatingConnectionLine();
             }
 
             @Override
@@ -165,7 +117,7 @@ public abstract class UMLObject extends JComponent {
             }
         });
         // set isSelected = false when select other object or null
-        editor.addChangeListener(e -> {
+        Editor.getInstance().addChangeListener(e -> {
             UMLObject[] selectedObjects = ((Editor) e.getSource()).getState().getSelectedObjects();
             if (selectedObjects == null) {
                 isSelected = false;
@@ -192,15 +144,6 @@ public abstract class UMLObject extends JComponent {
         isGrouped = grouped;
     }
 
-    public Point getConnectionPortOfDirection(ConnectionPortDirection direction) {
-        return switch (direction) {
-            case TOP -> shape.getPointOfDirection(Shape.Direction.TOP);
-            case RIGHT -> shape.getPointOfDirection(Shape.Direction.RIGHT);
-            case BOTTOM -> shape.getPointOfDirection(Shape.Direction.BOTTOM);
-            case LEFT -> shape.getPointOfDirection(Shape.Direction.LEFT);
-        };
-    }
-
     public boolean isSelected() {
         return isSelected;
     }
@@ -214,68 +157,11 @@ public abstract class UMLObject extends JComponent {
         paintChildren(g);
         super.paintComponent(g);
         paintSelf(g);
-        paintConnectionPorts(g);
-        g.dispose();
-    }
-
-    protected abstract void paintSelf(Graphics g);
-
-    protected void paintConnectionPorts(Graphics g) {
-        Graphics2D g2 = (Graphics2D) g;
-        if (isSelected) {
-            // connection ports
-            Point p1 = shape.getPointOfDirection(Shape.Direction.LEFT_TOP);
-            Point p2 = shape.getPointOfDirection(Shape.Direction.RIGHT_BOTTOM);
-            Point p3 = shape.getPointOfDirection(Shape.Direction.RIGHT_TOP);
-            Point p4 = shape.getPointOfDirection(Shape.Direction.LEFT_BOTTOM);
-
-            g2.drawLine(p1.getX() + padding,
-                    p1.getY() + padding,
-                    p2.getX() + padding,
-                    p2.getY() + padding);
-            g2.drawLine(p3.getX() + padding,
-                    p3.getY() + padding,
-                    p4.getX() + padding,
-                    p4.getY() + padding);
-
-            if (linkable) {
-                int width = (getWidth() - padding * 2) / 20;
-                int height = (getHeight() - padding * 2) / 20;
-
-                Point p5 = shape.getPointOfDirection(Shape.Direction.TOP);
-                Point p6 = shape.getPointOfDirection(Shape.Direction.BOTTOM);
-                Point p7 = shape.getPointOfDirection(Shape.Direction.LEFT);
-                Point p8 = shape.getPointOfDirection(Shape.Direction.RIGHT);
-
-                g2.fillRect(p5.getX() + padding - width / 2, p5.getY() + padding - height, width, height);
-                g2.fillRect(p6.getX() + padding - width / 2, p6.getY() + padding, width, height);
-                g2.fillRect(p7.getX() + padding - width, p7.getY() + padding - height / 2, width, height);
-                g2.fillRect(p8.getX() + padding, p8.getY() + padding - height / 2, width, height);
-            }
-        }
-    }
-
-    public ConnectionPortDirection getConnectionPortDirection(int x, int y) {
-        int centerX = getWidth() / 2;
-        int centerY = getHeight() / 2;
-        double degree = Math.toDegrees(
-                Math.acos((x - centerX) / Math.sqrt(Math.pow(x - centerX, 2) + Math.pow(y - centerY, 2))));
-        if (degree >= 45 && degree <= 135) {
-            if (centerY < y)
-                return ConnectionPortDirection.BOTTOM;
-            else
-                return ConnectionPortDirection.TOP;
-        } else if (degree >= 0 && degree <= 45)
-            return ConnectionPortDirection.RIGHT;
-        else
-            return ConnectionPortDirection.LEFT;
     }
 
     public int getPadding() {
         return padding;
     }
 
-    public enum ConnectionPortDirection {
-        TOP, RIGHT, BOTTOM, LEFT
-    }
+    protected abstract void paintSelf(Graphics g);
 }

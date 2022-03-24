@@ -1,7 +1,7 @@
 package org.ppodds.graphic.line;
 
 import org.ppodds.core.math.Vector2D;
-import org.ppodds.graphic.object.UMLObject;
+import org.ppodds.graphic.object.UMLBasicObject;
 
 import java.awt.*;
 import java.awt.geom.Path2D;
@@ -11,7 +11,7 @@ public class GeneralizationLine extends ConnectionLine {
     private Vector2D base;
     private Vector2D lineEndPoint;
 
-    public GeneralizationLine(UMLObject.ConnectionPortDirection fromConnectionPort, UMLObject.ConnectionPortDirection toConnectionPort, UMLObject fromObject, UMLObject toObject) {
+    public GeneralizationLine(UMLBasicObject.ConnectionPortDirection fromConnectionPort, UMLBasicObject.ConnectionPortDirection toConnectionPort, UMLBasicObject fromObject, UMLBasicObject toObject) {
         super(ConnectionLineType.GENERALIZATION_LINE, fromConnectionPort, toConnectionPort, fromObject, toObject);
     }
 

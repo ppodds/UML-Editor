@@ -6,7 +6,7 @@ import java.awt.*;
 
 public class CompositeObject extends UMLObject {
     public CompositeObject(UMLObject[] umlObjects) {
-        super(false, false);
+        super(false, false, 0);
         setOpaque(false);
         // 540 <- default size of canvas
         int x = 540, y = 540, width = 0, height = 0;
@@ -21,7 +21,7 @@ public class CompositeObject extends UMLObject {
             height = Math.max(height, (o.getY() + o.getHeight()) - y);
         }
         setBounds(x, y, width, height);
-        shape = new Rectangle(getWidth() - padding * 2, getHeight() - padding * 2);
+        shape = new Rectangle(getWidth(), getHeight());
         for (var o : umlObjects) {
             o.setLocation(o.getX() - x, o.getY() - y);
         }
@@ -29,6 +29,6 @@ public class CompositeObject extends UMLObject {
 
     @Override
     protected void paintSelf(Graphics g) {
-
+        g.dispose();
     }
 }
