@@ -6,12 +6,6 @@ import org.ppodds.core.event.ChangeListener;
 import javax.swing.*;
 
 public class Editor extends JPanel {
-    private final JButton selectBtn;
-    private final JButton associationLineBtn;
-    private final JButton generalizationLineBtn;
-    private final JButton compositionLineBtn;
-    private final JButton classBtn;
-    private final JButton useCaseBtn;
     private final UMLCanvas canvas;
 
     private static Editor instance = null;
@@ -21,18 +15,22 @@ public class Editor extends JPanel {
         instance = this;
         state = new EditorState();
 
-        selectBtn = new ToolButton(new ImageIcon(ResourceManager.getResource("icons/arrow-pointer-solid.png")), EditorState.EditorOperation.SELECT);
-        associationLineBtn = new ToolButton(new ImageIcon(ResourceManager.getResource("icons/association-line.png")), EditorState.EditorOperation.ASSOCIATION_LINE);
-        generalizationLineBtn = new ToolButton(new ImageIcon(ResourceManager.getResource("icons/generalization-line.png")), EditorState.EditorOperation.GENERALIZATION_LINE);
-        compositionLineBtn = new ToolButton(new ImageIcon(ResourceManager.getResource("icons/composition-line.png")), EditorState.EditorOperation.COMPOSITION_LINE);
-        classBtn = new ToolButton(new ImageIcon(ResourceManager.getResource("icons/class.png")), EditorState.EditorOperation.CLASS);
-        useCaseBtn = new ToolButton(new ImageIcon(ResourceManager.getResource("icons/use-case.png")), EditorState.EditorOperation.USE_CASE);
+        JButton selectBtn = new ToolButton(new ImageIcon(ResourceManager.getResource("icons/arrow-pointer-solid.png")), EditorState.EditorOperation.SELECT);
+        JButton associationLineBtn = new ToolButton(new ImageIcon(ResourceManager.getResource("icons/association-line.png")), EditorState.EditorOperation.ASSOCIATION_LINE);
+        JButton generalizationLineBtn = new ToolButton(new ImageIcon(ResourceManager.getResource("icons/generalization-line.png")), EditorState.EditorOperation.GENERALIZATION_LINE);
+        JButton compositionLineBtn = new ToolButton(new ImageIcon(ResourceManager.getResource("icons/composition-line.png")), EditorState.EditorOperation.COMPOSITION_LINE);
+        JButton classBtn = new ToolButton(new ImageIcon(ResourceManager.getResource("icons/class.png")), EditorState.EditorOperation.CLASS);
+        JButton useCaseBtn = new ToolButton(new ImageIcon(ResourceManager.getResource("icons/use-case.png")), EditorState.EditorOperation.USE_CASE);
 
         canvas = new UMLCanvas();
         add(canvas);
 
         GroupLayout layout = new GroupLayout(this);
         setLayout(layout);
+        initLayout(selectBtn, associationLineBtn, generalizationLineBtn, compositionLineBtn, classBtn, useCaseBtn, layout);
+    }
+
+    private void initLayout(JButton selectBtn, JButton associationLineBtn, JButton generalizationLineBtn, JButton compositionLineBtn, JButton classBtn, JButton useCaseBtn, GroupLayout layout) {
         layout.setAutoCreateGaps(true);
         layout.setAutoCreateContainerGaps(true);
 
