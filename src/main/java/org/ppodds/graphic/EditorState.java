@@ -1,7 +1,7 @@
 package org.ppodds.graphic;
 
 import org.ppodds.core.event.ChangeEvent;
-import org.ppodds.graphic.object.ConnectionLine;
+import org.ppodds.graphic.line.ConnectionLineType;
 import org.ppodds.graphic.object.UMLObject;
 
 public class EditorState {
@@ -30,14 +30,13 @@ public class EditorState {
     }
 
     public void createCreatingConnectionLine(UMLObject.ConnectionPortDirection fromConnectionPort) {
-        ConnectionLine.ConnectionLineType type;
+        ConnectionLineType type;
         switch (operation) {
-            case ASSOCIATION_LINE -> type = ConnectionLine.ConnectionLineType.ASSOCIATION_LINE;
-            case GENERALIZATION_LINE -> type = ConnectionLine.ConnectionLineType.GENERALIZATION_LINE;
-            case COMPOSITION_LINE -> type = ConnectionLine.ConnectionLineType.COMPOSITION_LINE;
+            case ASSOCIATION_LINE -> type = ConnectionLineType.ASSOCIATION_LINE;
+            case GENERALIZATION_LINE -> type = ConnectionLineType.GENERALIZATION_LINE;
+            case COMPOSITION_LINE -> type = ConnectionLineType.COMPOSITION_LINE;
             default -> throw new IllegalStateException("Unexpected value: " + operation);
         }
-        System.out.println("AA");
         creatingConnectionLine = new CreatingConnectionLine(type, fromConnectionPort);
         publishEvent();
     }
@@ -67,10 +66,10 @@ public class EditorState {
     }
 
     public class CreatingConnectionLine {
-        public final ConnectionLine.ConnectionLineType type;
+        public final ConnectionLineType type;
         public final UMLObject.ConnectionPortDirection fromConnectionPort;
 
-        public CreatingConnectionLine(ConnectionLine.ConnectionLineType type,
+        public CreatingConnectionLine(ConnectionLineType type,
                                       UMLObject.ConnectionPortDirection fromConnectionPort) {
             this.type = type;
             this.fromConnectionPort = fromConnectionPort;

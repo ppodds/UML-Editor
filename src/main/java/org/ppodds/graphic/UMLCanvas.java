@@ -1,15 +1,16 @@
 package org.ppodds.graphic;
 
-import org.ppodds.core.math.Point;
-import org.ppodds.core.math.Vector2D;
-import org.ppodds.graphic.object.*;
+import org.ppodds.graphic.line.*;
+import org.ppodds.graphic.object.ClassObject;
+import org.ppodds.graphic.object.CompositeObject;
+import org.ppodds.graphic.object.UMLObject;
+import org.ppodds.graphic.object.UseCaseObject;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.awt.geom.Path2D;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -155,8 +156,12 @@ public class UMLCanvas extends JPanel {
         repaint();
     }
 
-    public void createConnectionLine(ConnectionLine.ConnectionLineType type, UMLObject.ConnectionPortDirection fromConnectionPort, UMLObject.ConnectionPortDirection toConnectionPort, UMLObject fromObject, UMLObject toObject) {
-        connectionLineList.add(new ConnectionLine(type, fromConnectionPort, toConnectionPort, fromObject, toObject));
+    public void createConnectionLine(ConnectionLineType type, UMLObject.ConnectionPortDirection fromConnectionPort, UMLObject.ConnectionPortDirection toConnectionPort, UMLObject fromObject, UMLObject toObject) {
+        switch (type) {
+            case ASSOCIATION_LINE -> connectionLineList.add(new AssociationLine(fromConnectionPort, toConnectionPort, fromObject, toObject));
+            case GENERALIZATION_LINE -> connectionLineList.add(new GeneralizationLine(fromConnectionPort, toConnectionPort, fromObject, toObject));
+            case COMPOSITION_LINE -> connectionLineList.add(new CompositionLine(fromConnectionPort, toConnectionPort, fromObject, toObject));
+        }
         repaint();
     }
 
@@ -168,88 +173,8 @@ public class UMLCanvas extends JPanel {
         g2.setPaint(Color.BLACK);
         g2.drawRect(0, 0, getWidth(), getHeight());
         // draw connection lines
-        for (var c : connectionLineList) {
-            UMLObject fromObject = c.getFromObject();
-            org.ppodds.core.math.Point p1 = fromObject.getConnectionPortOfDirection(c.getFromConnectionPort());
-            UMLObject toObject = c.getToObject();
-            Point p2 = toObject.getConnectionPortOfDirection(c.getToConnectionPort());
-            int fromObjectX = fromObject.getX() + fromObject.getPadding() + p1.getX();
-            int fromObjectY = fromObject.getY() + fromObject.getPadding() + p1.getY();
-            int toObjectX = toObject.getX() + toObject.getPadding() + p2.getX();
-            int toObjectY = toObject.getY() + toObject.getPadding() + p2.getY();
-            while (fromObject.isGrouped()) {
-                fromObject = (UMLObject) fromObject.getParent();
-                fromObjectX += fromObject.getX() + fromObject.getPadding();
-                fromObjectY += fromObject.getY() + fromObject.getPadding();
-            }
-            while (toObject.isGrouped()) {
-                toObject = (UMLObject) toObject.getParent();
-                toObjectX += toObject.getX() + toObject.getPadding();
-                toObjectY += toObject.getY() + toObject.getPadding();
-            }
-            Vector2D start = new Vector2D(fromObjectX, fromObjectY);
-            Vector2D end = new Vector2D(toObjectX, toObjectY);
-            switch (c.getType()) {
-                case ASSOCIATION_LINE -> {
-                    Vector2D v = end.subtract(start);
-                    Vector2D base = v.normalVector().unitVector().multiply(7 * 2);
-                    Vector2D lineEnd = start.add(v.subtract(v.unitVector().multiply(7 * Math.sqrt(3))));
-                    g2.drawLine((int) start.x, (int) start.y, (int) end.x, (int) end.y);
-                    g2.draw(new Arrow(lineEnd, base));
-                }
-                case GENERALIZATION_LINE -> {
-                    Vector2D v = end.subtract(start);
-                    Vector2D base = v.normalVector().unitVector().multiply(7 * 2);
-                    Vector2D lineEnd = start.add(v.subtract(v.unitVector().multiply(7 * Math.sqrt(3))));
-                    g2.drawLine((int) start.x, (int) start.y, (int) lineEnd.x, (int) lineEnd.y);
-                    g2.draw(new Triangle(lineEnd, base));
-                }
-                case COMPOSITION_LINE -> {
-                    Vector2D v = end.subtract(start);
-                    Vector2D h = v.unitVector().multiply(8 * Math.sqrt(2));
-                    Vector2D lineEnd = start.add(v.subtract(h));
-                    g2.drawLine((int) start.x, (int) start.y, (int) lineEnd.x, (int) lineEnd.y);
-                    g2.draw(new Diamond(lineEnd, h));
-                }
-            }
-        }
+        for (var c : connectionLineList)
+            c.paint(g);
         g.dispose();
-    }
-
-    private class Arrow extends Path2D.Double {
-        public Arrow(Vector2D basePoint, Vector2D base) {
-            Vector2D p1 = basePoint.add(base.multiply(0.5));
-            Vector2D p2 = basePoint.add(base.normalVector().reverse());
-            Vector2D p3 = basePoint.add(base.multiply(0.5).reverse());
-            moveTo(p1.x, p1.y);
-            lineTo(p2.x, p2.y);
-            lineTo(p3.x, p3.y);
-        }
-    }
-
-    private class Triangle extends Path2D.Double {
-        public Triangle(Vector2D basePoint, Vector2D base) {
-            Vector2D p1 = basePoint.add(base.multiply(0.5));
-            Vector2D p2 = basePoint.add(base.normalVector().reverse());
-            Vector2D p3 = basePoint.add(base.multiply(0.5).reverse());
-            moveTo(p1.x, p1.y);
-            lineTo(p2.x, p2.y);
-            lineTo(p3.x, p3.y);
-            closePath();
-        }
-    }
-
-    private class Diamond extends Path2D.Double {
-        public Diamond(Vector2D basePoint, Vector2D hypotenuse) {
-            Vector2D t = hypotenuse.multiply(0.5);
-            Vector2D p1 = basePoint.add(t.add(t.normalVector().reverse()));
-            Vector2D p2 = basePoint.add(hypotenuse);
-            Vector2D p3 = basePoint.add(t.add(t.normalVector()));
-            moveTo(basePoint.x, basePoint.y);
-            lineTo(p1.x, p1.y);
-            lineTo(p2.x, p2.y);
-            lineTo(p3.x, p3.y);
-            closePath();
-        }
     }
 }
