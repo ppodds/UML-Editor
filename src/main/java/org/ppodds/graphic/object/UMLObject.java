@@ -1,5 +1,6 @@
 package org.ppodds.graphic.object;
 
+import org.ppodds.core.math.Point;
 import org.ppodds.core.math.Shape;
 import org.ppodds.graphic.Editor;
 import org.ppodds.graphic.EditorState;
@@ -17,10 +18,8 @@ public abstract class UMLObject extends JComponent {
     protected Shape shape;
     private boolean isSelected = false;
     private boolean isGrouped = false;
-    private int beforeMoveX;
-    private int beforeMoveY;
-    private int beforeMoveXOffset;
-    private int beforeMoveYOffset;
+    private Point beforeMovePosition;
+    private Point beforeMoveOffset;
     private PreviewObject movingPreview = null;
 
     public UMLObject(boolean linkable, boolean nameCustomizable, int padding) {
@@ -65,10 +64,8 @@ public abstract class UMLObject extends JComponent {
                     o.isSelected = !o.isSelected;
                     if (o.isSelected) {
                         state.setSelectedObjects(new UMLObject[]{o});
-                        beforeMoveX = o.getX();
-                        beforeMoveY = o.getY();
-                        beforeMoveXOffset = e.getX();
-                        beforeMoveYOffset = e.getY();
+                        beforeMovePosition = new Point(o.getX(), o.getY());
+                        beforeMoveOffset = new Point(e.getX(), e.getY());
                         movingPreview = new PreviewObject(o);
                         Editor.getInstance().getCanvas().showPreviewObject(movingPreview);
                     } else
@@ -106,8 +103,8 @@ public abstract class UMLObject extends JComponent {
                 if (o.isSelected) {
                     o.setVisible(false);
                     movingPreview.setVisible(true);
-                    movingPreview.setLocation(o.beforeMoveX + e.getX() - o.beforeMoveXOffset,
-                            o.beforeMoveY + e.getY() - o.beforeMoveYOffset);
+                    movingPreview.setLocation(o.beforeMovePosition.getX() + e.getX() - o.beforeMoveOffset.getX(),
+                            o.beforeMovePosition.getY() + e.getY() - o.beforeMoveOffset.getY());
                 }
             }
 
