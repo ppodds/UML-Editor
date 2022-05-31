@@ -1,5 +1,6 @@
 package org.ppodds.graphic;
 
+import org.ppodds.graphic.editor.Editor;
 import org.ppodds.graphic.object.UMLObject;
 
 import javax.swing.*;
@@ -60,6 +61,6 @@ public class SelectedArea extends JPanel {
             }
         }
         UMLObject[] selectedObjects = new UMLObject[selectedObjectList.size()];
-        Editor.getInstance().getState().setSelectedObjects(selectedObjectList.toArray(selectedObjects));
+        Editor.getInstance().getEditorState().setSelectedObjects(selectedObjectList.toArray(selectedObjects));
     }
 }

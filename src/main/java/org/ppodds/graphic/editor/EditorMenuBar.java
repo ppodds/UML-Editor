@@ -1,29 +1,27 @@
-package org.ppodds.graphic;
+package org.ppodds.graphic.editor;
 
+import org.ppodds.graphic.ChangeObjectNameFrame;
 import org.ppodds.graphic.object.UMLObject;
 
 import javax.swing.*;
 
 public class EditorMenuBar extends JMenuBar {
-    private final Editor editor;
-
     public EditorMenuBar() {
-        editor = Editor.getInstance();
         JMenu fileMenu = new JMenu("File");
         JMenu editMenu = new JMenu("Edit");
         JMenuItem group = new JMenuItem("group");
         group.addActionListener(e -> {
-            editor.getCanvas().createCompositeObject();
-            editor.getState().setSelectedObjects(null);
+            Editor.getInstance().getEditorContentPane().getCanvas().createCompositeObject();
+            Editor.getInstance().getEditorState().setSelectedObjects(null);
         });
         JMenuItem ungroup = new JMenuItem("ungroup");
         ungroup.addActionListener(e -> {
-            editor.getCanvas().ungroupCompositeObject();
-            editor.getState().setSelectedObjects(null);
+            Editor.getInstance().getEditorContentPane().getCanvas().ungroupCompositeObject();
+            Editor.getInstance().getEditorState().setSelectedObjects(null);
         });
         JMenuItem changeObjectName = new JMenuItem("change object name");
         changeObjectName.addActionListener(e -> {
-            UMLObject[] selectedObjects = editor.getState().getSelectedObjects();
+            UMLObject[] selectedObjects = Editor.getInstance().getEditorState().getSelectedObjects();
             if (selectedObjects != null
                     && selectedObjects.length == 1
                     && selectedObjects[0].isNameCustomizable()) {

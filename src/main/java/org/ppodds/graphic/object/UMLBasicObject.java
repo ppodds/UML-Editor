@@ -2,8 +2,8 @@ package org.ppodds.graphic.object;
 
 import org.ppodds.core.math.Point;
 import org.ppodds.core.math.Shape;
-import org.ppodds.graphic.Editor;
-import org.ppodds.graphic.EditorState;
+import org.ppodds.graphic.editor.Editor;
+import org.ppodds.graphic.editor.EditorState;
 
 import java.awt.*;
 import java.awt.event.MouseEvent;
@@ -32,7 +32,7 @@ public abstract class UMLBasicObject extends UMLObject {
             @Override
             public void mousePressed(MouseEvent e) {
                 UMLBasicObject o = (UMLBasicObject) e.getSource();
-                EditorState state = Editor.getInstance().getState();
+                EditorState state = Editor.getInstance().getEditorState();
                 if ((state.getOperation() == EditorState.EditorOperation.ASSOCIATION_LINE
                         || state.getOperation() == EditorState.EditorOperation.GENERALIZATION_LINE
                         || state.getOperation() == EditorState.EditorOperation.COMPOSITION_LINE)
@@ -44,7 +44,7 @@ public abstract class UMLBasicObject extends UMLObject {
             @Override
             public void mouseReleased(MouseEvent e) {
                 UMLBasicObject o = (UMLBasicObject) e.getSource();
-                EditorState state = Editor.getInstance().getState();
+                EditorState state = Editor.getInstance().getEditorState();
                 if (state.getCreatingConnectionLine() != null
                         && (state.getOperation() == EditorState.EditorOperation.ASSOCIATION_LINE
                         || state.getOperation() == EditorState.EditorOperation.GENERALIZATION_LINE
@@ -55,7 +55,7 @@ public abstract class UMLBasicObject extends UMLObject {
                     UMLBasicObject toObject = getLinkableObjectOn(x, y);
                     if (toObject != null && state.getCreatingConnectionLine().originObject != toObject) {
                         var t = state.getCreatingConnectionLine();
-                        Editor.getInstance().getCanvas().createConnectionLine(t.type,
+                        Editor.getInstance().getEditorContentPane().getCanvas().createConnectionLine(t.type,
                                 t.fromConnectionPort,
                                 toObject.getConnectionPortDirection(
                                         x - toObject.getX(),
@@ -80,7 +80,7 @@ public abstract class UMLBasicObject extends UMLObject {
 
     private UMLBasicObject getLinkableObjectOn(int x, int y) {
         UMLBasicObject o = null;
-        for (var c : Editor.getInstance().getCanvas().getComponents()) {
+        for (var c : Editor.getInstance().getEditorContentPane().getCanvas().getComponents()) {
             assert c instanceof UMLObject : "Children of canvas must be instance of UMLObject";
             // check if the mouse in the object
             if (x > c.getX() && x < c.getX() + c.getWidth()

@@ -1,5 +1,6 @@
-package org.ppodds.graphic;
+package org.ppodds.graphic.editor;
 
+import org.ppodds.graphic.SelectedArea;
 import org.ppodds.graphic.line.*;
 import org.ppodds.graphic.object.*;
 
@@ -34,7 +35,7 @@ public class UMLCanvas extends JPanel {
 
             @Override
             public void mousePressed(MouseEvent e) {
-                switch (editor.getState().getOperation()) {
+                switch (editor.getEditorState().getOperation()) {
                     case CLASS: {
                         createClassObject(e.getX(), e.getY());
                         break;
@@ -48,8 +49,8 @@ public class UMLCanvas extends JPanel {
                 }
 
                 // select null detect
-                if (editor.getState().getOperation() == EditorState.EditorOperation.SELECT) {
-                    editor.getState().setSelectedObjects(null);
+                if (editor.getEditorState().getOperation() == EditorState.EditorOperation.SELECT) {
+                    editor.getEditorState().setSelectedObjects(null);
                     // create select area
                     selectedArea = new SelectedArea(e.getX(), e.getY());
                     add(selectedArea);
@@ -60,7 +61,7 @@ public class UMLCanvas extends JPanel {
 
             @Override
             public void mouseReleased(MouseEvent e) {
-                if (editor.getState().getOperation() == EditorState.EditorOperation.SELECT && selectedArea != null) {
+                if (editor.getEditorState().getOperation() == EditorState.EditorOperation.SELECT && selectedArea != null) {
                     // select UMLObjects in selected area
                     selectedArea.selectUMLObjects(getComponents());
 
@@ -81,7 +82,7 @@ public class UMLCanvas extends JPanel {
         addMouseMotionListener(new MouseMotionListener() {
             @Override
             public void mouseDragged(MouseEvent e) {
-                if (editor.getState().getOperation() == EditorState.EditorOperation.SELECT && selectedArea != null) {
+                if (editor.getEditorState().getOperation() == EditorState.EditorOperation.SELECT && selectedArea != null) {
                     selectedArea.selecting(Math.max(e.getX(), 0), Math.max(e.getY(), 0));
                 }
             }
@@ -93,7 +94,7 @@ public class UMLCanvas extends JPanel {
     }
 
     public void createCompositeObject() {
-        UMLObject[] selectedObjects = editor.getState().getSelectedObjects();
+        UMLObject[] selectedObjects = editor.getEditorState().getSelectedObjects();
         if (selectedObjects != null && selectedObjects.length > 1) {
             for (var o : selectedObjects)
                 remove(o);
@@ -105,7 +106,7 @@ public class UMLCanvas extends JPanel {
     }
 
     public void ungroupCompositeObject() {
-        UMLObject[] selectedObjects = editor.getState().getSelectedObjects();
+        UMLObject[] selectedObjects = editor.getEditorState().getSelectedObjects();
         if (selectedObjects != null && selectedObjects.length == 1
                 && selectedObjects[0] instanceof CompositeObject) {
             CompositeObject o = (CompositeObject) selectedObjects[0];

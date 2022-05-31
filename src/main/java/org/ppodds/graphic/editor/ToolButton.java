@@ -1,15 +1,13 @@
-package org.ppodds.graphic;
+package org.ppodds.graphic.editor;
 
 import javax.swing.*;
 import java.awt.*;
 
 public class ToolButton extends JButton {
     private final EditorState.EditorOperation operation;
-    private final Editor editor;
 
     public ToolButton(Icon icon, EditorState.EditorOperation operation) {
         super(icon);
-        editor = Editor.getInstance();
         this.operation = operation;
         init(operation);
         setMargin(new Insets(0, 0, 0, 0));
@@ -20,9 +18,9 @@ public class ToolButton extends JButton {
         if (operation == EditorState.EditorOperation.SELECT)
             setBackground(Color.BLACK);
 
-        addActionListener(e -> editor.getState().setOperation(this.operation));
-        editor.addChangeListener(e -> {
-            if (editor.getState().getOperation() == operation)
+        addActionListener(e -> Editor.getInstance().getEditorState().setOperation(this.operation));
+        Editor.getInstance().getEditorState().addChangeListener(e -> {
+            if (Editor.getInstance().getEditorState().getOperation() == operation)
                 setBackground(Color.BLACK);
             else
                 setBackground(Color.WHITE);

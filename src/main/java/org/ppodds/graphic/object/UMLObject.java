@@ -2,8 +2,8 @@ package org.ppodds.graphic.object;
 
 import org.ppodds.core.math.Point;
 import org.ppodds.core.math.Shape;
-import org.ppodds.graphic.Editor;
-import org.ppodds.graphic.EditorState;
+import org.ppodds.graphic.editor.Editor;
+import org.ppodds.graphic.editor.EditorState;
 
 import javax.swing.*;
 import java.awt.*;
@@ -56,7 +56,7 @@ public abstract class UMLObject extends JComponent {
             @Override
             public void mousePressed(MouseEvent e) {
                 UMLObject o = (UMLObject) e.getSource();
-                EditorState state = Editor.getInstance().getState();
+                EditorState state = Editor.getInstance().getEditorState();
                 if (state.getOperation() == EditorState.EditorOperation.SELECT) {
                     UMLObject topObject = o.topObject();
                     topObject.isSelected = !topObject.isSelected;
@@ -65,7 +65,7 @@ public abstract class UMLObject extends JComponent {
                         topObject.beforeMovePosition = new Point(topObject.getX(), topObject.getY());
                         topObject.beforeMoveOffset = new Point(e.getX(), e.getY());
                         topObject.movingPreview = new PreviewObject(topObject);
-                        Editor.getInstance().getCanvas().showPreviewObject(topObject.movingPreview);
+                        Editor.getInstance().getEditorContentPane().getCanvas().showPreviewObject(topObject.movingPreview);
                     } else
                         state.setSelectedObjects(null);
                 }
@@ -78,7 +78,7 @@ public abstract class UMLObject extends JComponent {
                 if (topObject.isSelected) {
                     topObject.setLocation(topObject.movingPreview.getX(), topObject.movingPreview.getY());
                     topObject.setVisible(true);
-                    Editor.getInstance().getCanvas().removePreviewObject(topObject.movingPreview);
+                    Editor.getInstance().getEditorContentPane().getCanvas().removePreviewObject(topObject.movingPreview);
                     topObject.movingPreview = null;
                 }
             }
@@ -112,8 +112,8 @@ public abstract class UMLObject extends JComponent {
             }
         });
         // set isSelected = false when select other object or null
-        Editor.getInstance().addChangeListener(e -> {
-            UMLObject[] selectedObjects = ((Editor) e.getSource()).getState().getSelectedObjects();
+        Editor.getInstance().getEditorState().addChangeListener(e -> {
+            UMLObject[] selectedObjects = ((Editor) e.getSource()).getEditorState().getSelectedObjects();
             if (selectedObjects == null) {
                 isSelected = false;
             } else {

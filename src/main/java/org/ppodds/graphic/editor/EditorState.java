@@ -1,15 +1,20 @@
-package org.ppodds.graphic;
+package org.ppodds.graphic.editor;
 
 import org.ppodds.core.event.ChangeEvent;
+import org.ppodds.core.event.ChangeListener;
 import org.ppodds.graphic.line.ConnectionLineType;
 import org.ppodds.graphic.object.UMLBasicObject;
 import org.ppodds.graphic.object.UMLObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class EditorState {
     private final Editor editor;
     private EditorOperation operation = EditorOperation.SELECT;
     private UMLObject[] selectedObjects = null;
     private CreatingConnectionLine creatingConnectionLine = null;
+    private final List<ChangeListener> listenerList = new ArrayList<>();
 
     public EditorState() {
         editor = Editor.getInstance();
@@ -47,8 +52,12 @@ public class EditorState {
         publishEvent();
     }
 
+    public void addChangeListener(ChangeListener listener) {
+        listenerList.add(listener);
+    }
+
     private void publishEvent() {
-        for (var l : editor.getChangeListeners()) {
+        for (var l : listenerList) {
             l.stateChanged(new ChangeEvent(editor));
         }
     }
