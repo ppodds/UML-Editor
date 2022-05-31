@@ -1,6 +1,5 @@
 package org.ppodds.graphic.editor;
 
-import org.ppodds.graphic.ChangeObjectNameFrame;
 import org.ppodds.graphic.object.UMLObject;
 
 import javax.swing.*;

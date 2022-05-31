@@ -1,6 +1,5 @@
-package org.ppodds.graphic;
+package org.ppodds.graphic.editor;
 
-import org.ppodds.graphic.editor.Editor;
 import org.ppodds.graphic.object.UMLObject;
 
 import javax.swing.*;
