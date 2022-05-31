@@ -53,10 +53,10 @@ public abstract class UMLBasicObject extends UMLObject {
                     int x = o.getX() + e.getX();
                     int y = o.getY() + e.getY();
                     UMLBasicObject toObject = getLinkableObjectOn(x, y);
-                    if (toObject != null && state.getCreatingConnectionLine().originObject != toObject) {
+                    if (toObject != null && state.getCreatingConnectionLine().originObject() != toObject) {
                         var t = state.getCreatingConnectionLine();
-                        Editor.getInstance().getEditorContentPane().getCanvas().createConnectionLine(t.type,
-                                t.fromConnectionPort,
+                        Editor.getInstance().getEditorContentPane().getCanvas().createConnectionLine(t.type(),
+                                t.fromConnectionPort(),
                                 toObject.getConnectionPortDirection(
                                         x - toObject.getX(),
                                         y - toObject.getY()),

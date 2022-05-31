@@ -49,8 +49,7 @@ public class SelectedArea extends JPanel {
     public void selectUMLObjects(Component[] components) {
         LinkedList<UMLObject> selectedObjectList = new LinkedList<>();
         for (var c : components) {
-            if (c instanceof UMLObject) {
-                UMLObject o = (UMLObject) c;
+            if (c instanceof UMLObject o) {
                 // check if the object in the selected area
                 if (o.getX() > getX() && o.getX() + o.getWidth() < getX() + getWidth()
                         && o.getY() > getY() && o.getY() + o.getHeight() < getY() + getHeight()

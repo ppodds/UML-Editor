@@ -36,16 +36,8 @@ public class UMLCanvas extends JPanel {
             @Override
             public void mousePressed(MouseEvent e) {
                 switch (editor.getEditorState().getOperation()) {
-                    case CLASS: {
-                        createClassObject(e.getX(), e.getY());
-                        break;
-                    }
-                    case USE_CASE: {
-                        createUseCaseObject(e.getX(), e.getY());
-                        break;
-                    }
-                    default:
-                        break;
+                    case CLASS -> createClassObject(e.getX(), e.getY());
+                    case USE_CASE -> createUseCaseObject(e.getX(), e.getY());
                 }
 
                 // select null detect
@@ -108,8 +100,7 @@ public class UMLCanvas extends JPanel {
     public void ungroupCompositeObject() {
         UMLObject[] selectedObjects = editor.getEditorState().getSelectedObjects();
         if (selectedObjects != null && selectedObjects.length == 1
-                && selectedObjects[0] instanceof CompositeObject) {
-            CompositeObject o = (CompositeObject) selectedObjects[0];
+                && selectedObjects[0] instanceof CompositeObject o) {
             remove(o);
             int x = o.getX();
             int y = o.getY();
@@ -159,9 +150,12 @@ public class UMLCanvas extends JPanel {
 
     public void createConnectionLine(ConnectionLineType type, UMLBasicObject.ConnectionPortDirection fromConnectionPort, UMLBasicObject.ConnectionPortDirection toConnectionPort, UMLBasicObject fromObject, UMLBasicObject toObject) {
         switch (type) {
-            case ASSOCIATION_LINE -> connectionLineList.add(new AssociationLine(fromConnectionPort, toConnectionPort, fromObject, toObject));
-            case GENERALIZATION_LINE -> connectionLineList.add(new GeneralizationLine(fromConnectionPort, toConnectionPort, fromObject, toObject));
-            case COMPOSITION_LINE -> connectionLineList.add(new CompositionLine(fromConnectionPort, toConnectionPort, fromObject, toObject));
+            case ASSOCIATION_LINE ->
+                    connectionLineList.add(new AssociationLine(fromConnectionPort, toConnectionPort, fromObject, toObject));
+            case GENERALIZATION_LINE ->
+                    connectionLineList.add(new GeneralizationLine(fromConnectionPort, toConnectionPort, fromObject, toObject));
+            case COMPOSITION_LINE ->
+                    connectionLineList.add(new CompositionLine(fromConnectionPort, toConnectionPort, fromObject, toObject));
         }
         repaint();
     }

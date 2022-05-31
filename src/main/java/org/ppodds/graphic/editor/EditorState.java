@@ -75,16 +75,7 @@ public class EditorState {
         SELECT, ASSOCIATION_LINE, GENERALIZATION_LINE, COMPOSITION_LINE, CLASS, USE_CASE
     }
 
-    public class CreatingConnectionLine {
-        public final ConnectionLineType type;
-        public final UMLBasicObject originObject;
-        public final UMLBasicObject.ConnectionPortDirection fromConnectionPort;
-
-        public CreatingConnectionLine(ConnectionLineType type, UMLBasicObject originObject,
-                                      UMLBasicObject.ConnectionPortDirection fromConnectionPort) {
-            this.type = type;
-            this.originObject = originObject;
-            this.fromConnectionPort = fromConnectionPort;
-        }
+    public record CreatingConnectionLine(ConnectionLineType type, UMLBasicObject originObject,
+                                         UMLBasicObject.ConnectionPortDirection fromConnectionPort) {
     }
 }
