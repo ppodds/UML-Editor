@@ -12,13 +12,4 @@ public class EditorState {
     public EditorOperation getOperation() {
         return operation;
     }
-
-//    public void setOperation(EditorOperation operation) {
-//        this.operation = operation;
-//        if (operation != EditorOperation.SELECT)
-//            selectedObjects = null;
-//        publishEvent();
-//    }
-
-
 }
