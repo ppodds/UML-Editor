@@ -12,7 +12,7 @@ public class AssociationLine extends ConnectionLine {
     private Vector2D lineEndPoint;
 
     public AssociationLine(UMLBasicObject.ConnectionPortDirection fromConnectionPort, UMLBasicObject.ConnectionPortDirection toConnectionPort, UMLBasicObject fromObject, UMLBasicObject toObject) {
-        super(ConnectionLineType.ASSOCIATION_LINE, fromConnectionPort, toConnectionPort, fromObject, toObject);
+        super(fromConnectionPort, toConnectionPort, fromObject, toObject);
     }
 
     @Override

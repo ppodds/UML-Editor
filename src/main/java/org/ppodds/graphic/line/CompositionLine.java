@@ -12,7 +12,7 @@ public class CompositionLine extends ConnectionLine {
     private Vector2D lineEndPoint;
 
     public CompositionLine(UMLBasicObject.ConnectionPortDirection fromConnectionPort, UMLBasicObject.ConnectionPortDirection toConnectionPort, UMLBasicObject fromObject, UMLBasicObject toObject) {
-        super(ConnectionLineType.COMPOSITION_LINE, fromConnectionPort, toConnectionPort, fromObject, toObject);
+        super(fromConnectionPort, toConnectionPort, fromObject, toObject);
     }
 
     @Override

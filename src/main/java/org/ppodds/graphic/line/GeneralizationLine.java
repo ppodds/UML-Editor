@@ -12,7 +12,7 @@ public class GeneralizationLine extends ConnectionLine {
     private Vector2D lineEndPoint;
 
     public GeneralizationLine(UMLBasicObject.ConnectionPortDirection fromConnectionPort, UMLBasicObject.ConnectionPortDirection toConnectionPort, UMLBasicObject fromObject, UMLBasicObject toObject) {
-        super(ConnectionLineType.GENERALIZATION_LINE, fromConnectionPort, toConnectionPort, fromObject, toObject);
+        super(fromConnectionPort, toConnectionPort, fromObject, toObject);
     }
 
     @Override
