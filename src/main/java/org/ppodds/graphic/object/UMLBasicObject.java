@@ -2,12 +2,9 @@ package org.ppodds.graphic.object;
 
 import org.ppodds.core.math.Point;
 import org.ppodds.core.math.Shape;
-import org.ppodds.graphic.Editor;
-import org.ppodds.graphic.EditorState;
+import org.ppodds.graphic.editor.Editor;
 
 import java.awt.*;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 
 public abstract class UMLBasicObject extends UMLObject {
 
@@ -19,68 +16,11 @@ public abstract class UMLBasicObject extends UMLObject {
         this.width = width;
         this.height = height;
         setBounds(x, y, width, height);
-        registerEventListeners();
     }
 
-    private void registerEventListeners() {
-        addMouseListener(new MouseListener() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mousePressed(MouseEvent e) {
-                UMLBasicObject o = (UMLBasicObject) e.getSource();
-                EditorState state = Editor.getInstance().getState();
-                if ((state.getOperation() == EditorState.EditorOperation.ASSOCIATION_LINE
-                        || state.getOperation() == EditorState.EditorOperation.GENERALIZATION_LINE
-                        || state.getOperation() == EditorState.EditorOperation.COMPOSITION_LINE)
-                        && !o.isGrouped()) {
-                    state.createCreatingConnectionLine(o, getConnectionPortDirection(e.getX(), e.getY()));
-                }
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-                UMLBasicObject o = (UMLBasicObject) e.getSource();
-                EditorState state = Editor.getInstance().getState();
-                if (state.getCreatingConnectionLine() != null
-                        && (state.getOperation() == EditorState.EditorOperation.ASSOCIATION_LINE
-                        || state.getOperation() == EditorState.EditorOperation.GENERALIZATION_LINE
-                        || state.getOperation() == EditorState.EditorOperation.COMPOSITION_LINE)
-                        && !o.isGrouped()) {
-                    int x = o.getX() + e.getX();
-                    int y = o.getY() + e.getY();
-                    UMLBasicObject toObject = getLinkableObjectOn(x, y);
-                    if (toObject != null && state.getCreatingConnectionLine().originObject != toObject) {
-                        var t = state.getCreatingConnectionLine();
-                        Editor.getInstance().getCanvas().createConnectionLine(t.type,
-                                t.fromConnectionPort,
-                                toObject.getConnectionPortDirection(
-                                        x - toObject.getX(),
-                                        y - toObject.getY()),
-                                o, toObject);
-                    }
-                }
-                state.removeCreatingConnectionLine();
-            }
-
-            @Override
-            public void mouseEntered(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-
-            }
-        });
-    }
-
-    private UMLBasicObject getLinkableObjectOn(int x, int y) {
+    public static UMLBasicObject getLinkableObjectOn(int x, int y) {
         UMLBasicObject o = null;
-        for (var c : Editor.getInstance().getCanvas().getComponents()) {
+        for (var c : Editor.getInstance().getEditorContentPane().getCanvas().getComponents()) {
             assert c instanceof UMLObject : "Children of canvas must be instance of UMLObject";
             // check if the mouse in the object
             if (x > c.getX() && x < c.getX() + c.getWidth()
@@ -110,14 +50,14 @@ public abstract class UMLBasicObject extends UMLObject {
         Point p3 = shape.getPointOfDirection(Shape.Direction.RIGHT_TOP);
         Point p4 = shape.getPointOfDirection(Shape.Direction.LEFT_BOTTOM);
 
-        g2.drawLine(p1.getX() + getPadding(),
-                p1.getY() + getPadding(),
-                p2.getX() + getPadding(),
-                p2.getY() + getPadding());
-        g2.drawLine(p3.getX() + getPadding(),
-                p3.getY() + getPadding(),
-                p4.getX() + getPadding(),
-                p4.getY() + getPadding());
+        g2.drawLine(p1.x() + getPadding(),
+                p1.y() + getPadding(),
+                p2.x() + getPadding(),
+                p2.y() + getPadding());
+        g2.drawLine(p3.x() + getPadding(),
+                p3.y() + getPadding(),
+                p4.x() + getPadding(),
+                p4.y() + getPadding());
 
         int width = (getWidth() - getPadding() * 2) / 20;
         int height = (getHeight() - getPadding() * 2) / 20;
@@ -127,10 +67,10 @@ public abstract class UMLBasicObject extends UMLObject {
         Point p7 = shape.getPointOfDirection(Shape.Direction.LEFT);
         Point p8 = shape.getPointOfDirection(Shape.Direction.RIGHT);
 
-        g2.fillRect(p5.getX() + getPadding() - width / 2, p5.getY() + getPadding() - height, width, height);
-        g2.fillRect(p6.getX() + getPadding() - width / 2, p6.getY() + getPadding(), width, height);
-        g2.fillRect(p7.getX() + getPadding() - width, p7.getY() + getPadding() - height / 2, width, height);
-        g2.fillRect(p8.getX() + getPadding(), p8.getY() + getPadding() - height / 2, width, height);
+        g2.fillRect(p5.x() + getPadding() - width / 2, p5.y() + getPadding() - height, width, height);
+        g2.fillRect(p6.x() + getPadding() - width / 2, p6.y() + getPadding(), width, height);
+        g2.fillRect(p7.x() + getPadding() - width, p7.y() + getPadding() - height / 2, width, height);
+        g2.fillRect(p8.x() + getPadding(), p8.y() + getPadding() - height / 2, width, height);
     }
 
 

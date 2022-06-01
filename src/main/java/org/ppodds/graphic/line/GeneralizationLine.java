@@ -12,7 +12,7 @@ public class GeneralizationLine extends ConnectionLine {
     private Vector2D lineEndPoint;
 
     public GeneralizationLine(UMLBasicObject.ConnectionPortDirection fromConnectionPort, UMLBasicObject.ConnectionPortDirection toConnectionPort, UMLBasicObject fromObject, UMLBasicObject toObject) {
-        super(ConnectionLineType.GENERALIZATION_LINE, fromConnectionPort, toConnectionPort, fromObject, toObject);
+        super(fromConnectionPort, toConnectionPort, fromObject, toObject);
     }
 
     @Override
@@ -21,7 +21,7 @@ public class GeneralizationLine extends ConnectionLine {
         Vector2D v = arrowEndPoint.subtract(arrowStartPoint);
         base = v.normalVector().unitVector().multiply(7 * 2);
         lineEndPoint = arrowStartPoint.add(v.subtract(v.unitVector().multiply(7 * Math.sqrt(3))));
-        g2.drawLine((int) arrowStartPoint.x, (int) arrowStartPoint.y, (int) lineEndPoint.x, (int) lineEndPoint.y);
+        g2.drawLine((int) arrowStartPoint.x(), (int) arrowStartPoint.y(), (int) lineEndPoint.x(), (int) lineEndPoint.y());
     }
 
     @Override
@@ -31,9 +31,9 @@ public class GeneralizationLine extends ConnectionLine {
         Vector2D p2 = lineEndPoint.add(base.normalVector().reverse());
         Vector2D p3 = lineEndPoint.add(base.multiply(0.5).reverse());
         Path2D.Double path = new Path2D.Double();
-        path.moveTo(p1.x, p1.y);
-        path.lineTo(p2.x, p2.y);
-        path.lineTo(p3.x, p3.y);
+        path.moveTo(p1.x(), p1.y());
+        path.lineTo(p2.x(), p2.y());
+        path.lineTo(p3.x(), p3.y());
         path.closePath();
         g2.draw(path);
     }

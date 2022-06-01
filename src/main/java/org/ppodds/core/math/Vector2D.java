@@ -1,13 +1,6 @@
 package org.ppodds.core.math;
 
-public class Vector2D {
-    public final double x;
-    public final double y;
-
-    public Vector2D(double x, double y) {
-        this.x = x;
-        this.y = y;
-    }
+public record Vector2D(double x, double y) {
 
     public Vector2D normalVector() {
         return new Vector2D(-this.y, this.x);

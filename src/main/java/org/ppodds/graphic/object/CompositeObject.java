@@ -1,7 +1,7 @@
 package org.ppodds.graphic.object;
 
 import org.ppodds.core.math.Rectangle;
-import org.ppodds.graphic.UMLCanvas;
+import org.ppodds.graphic.editor.UMLCanvas;
 
 import java.awt.*;
 

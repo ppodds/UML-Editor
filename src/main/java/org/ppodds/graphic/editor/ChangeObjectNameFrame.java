@@ -1,22 +1,19 @@
-package org.ppodds.graphic;
+package org.ppodds.graphic.editor;
 
 import org.ppodds.graphic.object.UMLObject;
 
 import javax.swing.*;
 
 public class ChangeObjectNameFrame extends JFrame {
-    private final Editor editor;
-
     public ChangeObjectNameFrame(UMLObject target) {
         super("Change Object Name");
-        editor = Editor.getInstance();
         JPanel panel = new JPanel();
         setContentPane(panel);
         JLabel label = new JLabel("Name:");
         JTextField textField = new JTextField(target.getName(), 15);
         JButton okBtn = new JButton("OK");
         okBtn.addActionListener(event -> {
-            editor.getCanvas().changeObjectName(target, textField.getText());
+            Editor.getInstance().getEditorContentPane().getCanvas().changeObjectName(target, textField.getText());
             dispose();
         });
         JButton cancelBtn = new JButton("Cancel");

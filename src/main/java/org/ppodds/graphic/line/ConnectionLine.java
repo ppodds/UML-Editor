@@ -14,10 +14,8 @@ public abstract class ConnectionLine {
     private final UMLBasicObject toObject;
     protected Vector2D arrowStartPoint;
     protected Vector2D arrowEndPoint;
-    private final ConnectionLineType type;
 
-    public ConnectionLine(ConnectionLineType type, UMLBasicObject.ConnectionPortDirection fromConnectionPort, UMLBasicObject.ConnectionPortDirection toConnectionPort, UMLBasicObject fromObject, UMLBasicObject toObject) {
-        this.type = type;
+    public ConnectionLine(UMLBasicObject.ConnectionPortDirection fromConnectionPort, UMLBasicObject.ConnectionPortDirection toConnectionPort, UMLBasicObject fromObject, UMLBasicObject toObject) {
         this.fromConnectionPort = fromConnectionPort;
         this.toConnectionPort = toConnectionPort;
         this.fromObject = fromObject;
@@ -40,19 +38,15 @@ public abstract class ConnectionLine {
         return toObject;
     }
 
-    public ConnectionLineType getType() {
-        return type;
-    }
-
     private void calculateLine() {
         UMLObject fromTopObject = getFromObject();
         Point p1 = fromObject.getConnectionPortOfDirection(getFromConnectionPort());
         UMLObject toTopObject = getToObject();
         Point p2 = toObject.getConnectionPortOfDirection(getToConnectionPort());
-        int fromX = fromObject.getX() + fromObject.getPadding() + p1.getX();
-        int fromY = fromObject.getY() + fromObject.getPadding() + p1.getY();
-        int toX = toObject.getX() + toObject.getPadding() + p2.getX();
-        int toY = toObject.getY() + toObject.getPadding() + p2.getY();
+        int fromX = fromObject.getX() + fromObject.getPadding() + p1.x();
+        int fromY = fromObject.getY() + fromObject.getPadding() + p1.y();
+        int toX = toObject.getX() + toObject.getPadding() + p2.x();
+        int toY = toObject.getY() + toObject.getPadding() + p2.y();
         while (fromTopObject.isGrouped()) {
             fromTopObject = (UMLObject) fromTopObject.getParent();
             fromX += fromTopObject.getX() + fromTopObject.getPadding();
