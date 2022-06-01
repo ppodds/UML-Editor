@@ -1,6 +1,5 @@
 package org.ppodds.graphic.object;
 
-import org.ppodds.core.math.Point;
 import org.ppodds.core.math.Shape;
 import org.ppodds.graphic.editor.Editor;
 
@@ -10,16 +9,13 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 
-public abstract class UMLObject extends JComponent {
+public abstract class UMLObject extends JComponent implements Cloneable {
     private final boolean nameCustomizable;
     private final boolean linkable;
     private final int padding;
     protected Shape shape;
     private boolean isSelected = false;
     private boolean isGrouped = false;
-    private Point beforeMovePosition;
-    private Point beforeMoveOffset;
-    private final PreviewObject movingPreview = null;
 
     public UMLObject(boolean linkable, boolean nameCustomizable, int padding) {
         super();
@@ -114,4 +110,13 @@ public abstract class UMLObject extends JComponent {
     }
 
     protected abstract void paintSelf(Graphics g);
+
+    @Override
+    public UMLObject clone() {
+        try {
+            return (UMLObject) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError();
+        }
+    }
 }

@@ -6,7 +6,6 @@ import org.ppodds.graphic.editor.Editor;
 import org.ppodds.graphic.editor.operation.Behavior;
 import org.ppodds.graphic.editor.operation.SelectedArea;
 import org.ppodds.graphic.object.CompositeObject;
-import org.ppodds.graphic.object.PreviewObject;
 import org.ppodds.graphic.object.UMLObject;
 
 import java.awt.*;
@@ -17,7 +16,7 @@ public class SelectBehavior extends Behavior {
     private UMLObject[] selectedObjects;
     private Point beforeMovePosition;
     private Point beforeMoveOffset;
-    private PreviewObject movingPreview;
+    private UMLObject movingPreview;
     private SelectedArea selectedArea;
 
     @Override
@@ -29,8 +28,8 @@ public class SelectBehavior extends Behavior {
                 setSelectedObjects(new UMLObject[]{topObject});
                 beforeMovePosition = new Point(topObject.getX(), topObject.getY());
                 beforeMoveOffset = new Point(e.getX(), e.getY());
-                movingPreview = new PreviewObject(topObject);
-                Editor.getInstance().getEditorContentPane().getCanvas().showPreviewObject(movingPreview);
+                movingPreview = topObject.clone();
+                Editor.getInstance().getEditorContentPane().getCanvas().addObject(movingPreview);
             } else setSelectedObjects(null);
         } else {
             // select null detect

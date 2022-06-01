@@ -86,13 +86,6 @@ public class UMLCanvas extends JPanel {
         repaint();
     }
 
-    public void showPreviewObject(UMLObject previewObject) {
-        add(previewObject);
-        umlObjectList.add(previewObject);
-        setComponentZOrder(previewObject, 0);
-        repaint();
-    }
-
     public void removePreviewObject(UMLObject previewObject) {
         remove(previewObject);
         umlObjectList.remove(previewObject);
