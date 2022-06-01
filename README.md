@@ -12,4 +12,4 @@ This is the term project of Object-Oriented Analysis and Design in National Cent
     - openjdk 17.0.2
     - gradle 7.4
 - IDE
-    - IntelliJ IDEA Community Edition 2020.3.2
+  - IntelliJ IDEA 2022.1.1
