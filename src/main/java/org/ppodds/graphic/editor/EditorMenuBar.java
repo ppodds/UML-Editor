@@ -1,6 +1,6 @@
 package org.ppodds.graphic.editor;
 
-import org.ppodds.graphic.object.UMLObject;
+import org.ppodds.graphic.editor.operation.behavior.SelectBehavior;
 
 import javax.swing.*;
 
@@ -10,21 +10,20 @@ public class EditorMenuBar extends JMenuBar {
         JMenu editMenu = new JMenu("Edit");
         JMenuItem group = new JMenuItem("group");
         group.addActionListener(e -> {
-            Editor.getInstance().getEditorContentPane().getCanvas().createCompositeObject();
-            Editor.getInstance().getEditorState().setSelectedObjects(null);
+            if (Editor.getInstance().getEditorState().getOperation().getUsingBehavior() instanceof SelectBehavior b) {
+                b.createCompositeObject();
+            }
         });
         JMenuItem ungroup = new JMenuItem("ungroup");
         ungroup.addActionListener(e -> {
-            Editor.getInstance().getEditorContentPane().getCanvas().ungroupCompositeObject();
-            Editor.getInstance().getEditorState().setSelectedObjects(null);
+            if (Editor.getInstance().getEditorState().getOperation().getUsingBehavior() instanceof SelectBehavior b) {
+                b.ungroupCompositeObject();
+            }
         });
         JMenuItem changeObjectName = new JMenuItem("change object name");
         changeObjectName.addActionListener(e -> {
-            UMLObject[] selectedObjects = Editor.getInstance().getEditorState().getSelectedObjects();
-            if (selectedObjects != null
-                    && selectedObjects.length == 1
-                    && selectedObjects[0].isNameCustomizable()) {
-                new ChangeObjectNameFrame(selectedObjects[0]);
+            if (Editor.getInstance().getEditorState().getOperation().getUsingBehavior() instanceof SelectBehavior b) {
+                b.changeObjectName();
             }
         });
         editMenu.add(group);

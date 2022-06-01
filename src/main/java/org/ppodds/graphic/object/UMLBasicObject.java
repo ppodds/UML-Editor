@@ -3,11 +3,8 @@ package org.ppodds.graphic.object;
 import org.ppodds.core.math.Point;
 import org.ppodds.core.math.Shape;
 import org.ppodds.graphic.editor.Editor;
-import org.ppodds.graphic.editor.EditorState;
 
 import java.awt.*;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 
 public abstract class UMLBasicObject extends UMLObject {
 
@@ -19,66 +16,9 @@ public abstract class UMLBasicObject extends UMLObject {
         this.width = width;
         this.height = height;
         setBounds(x, y, width, height);
-        registerEventListeners();
     }
 
-    private void registerEventListeners() {
-        addMouseListener(new MouseListener() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mousePressed(MouseEvent e) {
-                UMLBasicObject o = (UMLBasicObject) e.getSource();
-                EditorState state = Editor.getInstance().getEditorState();
-                if ((state.getOperation() == EditorState.EditorOperation.ASSOCIATION_LINE
-                        || state.getOperation() == EditorState.EditorOperation.GENERALIZATION_LINE
-                        || state.getOperation() == EditorState.EditorOperation.COMPOSITION_LINE)
-                        && !o.isGrouped()) {
-                    state.createCreatingConnectionLine(o, getConnectionPortDirection(e.getX(), e.getY()));
-                }
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-                UMLBasicObject o = (UMLBasicObject) e.getSource();
-                EditorState state = Editor.getInstance().getEditorState();
-                if (state.getCreatingConnectionLine() != null
-                        && (state.getOperation() == EditorState.EditorOperation.ASSOCIATION_LINE
-                        || state.getOperation() == EditorState.EditorOperation.GENERALIZATION_LINE
-                        || state.getOperation() == EditorState.EditorOperation.COMPOSITION_LINE)
-                        && !o.isGrouped()) {
-                    int x = o.getX() + e.getX();
-                    int y = o.getY() + e.getY();
-                    UMLBasicObject toObject = getLinkableObjectOn(x, y);
-                    if (toObject != null && state.getCreatingConnectionLine().originObject() != toObject) {
-                        var t = state.getCreatingConnectionLine();
-                        Editor.getInstance().getEditorContentPane().getCanvas().createConnectionLine(t.type(),
-                                t.fromConnectionPort(),
-                                toObject.getConnectionPortDirection(
-                                        x - toObject.getX(),
-                                        y - toObject.getY()),
-                                o, toObject);
-                    }
-                }
-                state.removeCreatingConnectionLine();
-            }
-
-            @Override
-            public void mouseEntered(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-
-            }
-        });
-    }
-
-    private UMLBasicObject getLinkableObjectOn(int x, int y) {
+    public static UMLBasicObject getLinkableObjectOn(int x, int y) {
         UMLBasicObject o = null;
         for (var c : Editor.getInstance().getEditorContentPane().getCanvas().getComponents()) {
             assert c instanceof UMLObject : "Children of canvas must be instance of UMLObject";

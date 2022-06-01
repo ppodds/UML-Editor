@@ -3,7 +3,6 @@ package org.ppodds.graphic.object;
 import org.ppodds.core.math.Point;
 import org.ppodds.core.math.Shape;
 import org.ppodds.graphic.editor.Editor;
-import org.ppodds.graphic.editor.EditorState;
 
 import javax.swing.*;
 import java.awt.*;
@@ -20,7 +19,7 @@ public abstract class UMLObject extends JComponent {
     private boolean isGrouped = false;
     private Point beforeMovePosition;
     private Point beforeMoveOffset;
-    private PreviewObject movingPreview = null;
+    private final PreviewObject movingPreview = null;
 
     public UMLObject(boolean linkable, boolean nameCustomizable, int padding) {
         super();
@@ -30,7 +29,7 @@ public abstract class UMLObject extends JComponent {
         init();
     }
 
-    private UMLObject topObject() {
+    public UMLObject topObject() {
         UMLObject topObject = this;
         while (topObject.isGrouped) {
             topObject = (UMLObject) topObject.getParent();
@@ -50,84 +49,39 @@ public abstract class UMLObject extends JComponent {
         addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
-
+                Editor.getInstance().getEditorState().getOperation().getUsingBehavior().mouseClicked(e);
             }
 
             @Override
             public void mousePressed(MouseEvent e) {
-                UMLObject o = (UMLObject) e.getSource();
-                EditorState state = Editor.getInstance().getEditorState();
-                if (state.getOperation() == EditorState.EditorOperation.SELECT) {
-                    UMLObject topObject = o.topObject();
-                    topObject.isSelected = !topObject.isSelected;
-                    if (topObject.isSelected) {
-                        state.setSelectedObjects(new UMLObject[]{topObject});
-                        topObject.beforeMovePosition = new Point(topObject.getX(), topObject.getY());
-                        topObject.beforeMoveOffset = new Point(e.getX(), e.getY());
-                        topObject.movingPreview = new PreviewObject(topObject);
-                        Editor.getInstance().getEditorContentPane().getCanvas().showPreviewObject(topObject.movingPreview);
-                    } else
-                        state.setSelectedObjects(null);
-                }
+                Editor.getInstance().getEditorState().getOperation().getUsingBehavior().mousePressed(e);
             }
 
             @Override
             public void mouseReleased(MouseEvent e) {
-                UMLObject o = (UMLObject) e.getSource();
-                UMLObject topObject = o.topObject();
-                if (topObject.isSelected) {
-                    topObject.setLocation(topObject.movingPreview.getX(), topObject.movingPreview.getY());
-                    topObject.setVisible(true);
-                    Editor.getInstance().getEditorContentPane().getCanvas().removePreviewObject(topObject.movingPreview);
-                    topObject.movingPreview = null;
-                }
+                Editor.getInstance().getEditorState().getOperation().getUsingBehavior().mouseReleased(e);
             }
 
             @Override
             public void mouseEntered(MouseEvent e) {
-
+                Editor.getInstance().getEditorState().getOperation().getUsingBehavior().mouseEntered(e);
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
-
+                Editor.getInstance().getEditorState().getOperation().getUsingBehavior().mouseExited(e);
             }
         });
         addMouseMotionListener(new MouseMotionListener() {
             @Override
             public void mouseDragged(MouseEvent e) {
-                UMLObject o = (UMLObject) e.getSource();
-                UMLObject topObject = o.topObject();
-                if (topObject.isSelected) {
-                    topObject.setVisible(false);
-                    topObject.movingPreview.setVisible(true);
-                    topObject.movingPreview.setLocation(topObject.beforeMovePosition.getX() + e.getX() - topObject.beforeMoveOffset.getX(),
-                            topObject.beforeMovePosition.getY() + e.getY() - topObject.beforeMoveOffset.getY());
-                }
+                Editor.getInstance().getEditorState().getOperation().getUsingBehavior().mouseDragged(e);
             }
 
             @Override
             public void mouseMoved(MouseEvent e) {
-
+                Editor.getInstance().getEditorState().getOperation().getUsingBehavior().mouseMoved(e);
             }
-        });
-        // set isSelected = false when select other object or null
-        Editor.getInstance().getEditorState().addChangeListener(e -> {
-            UMLObject[] selectedObjects = ((Editor) e.getSource()).getEditorState().getSelectedObjects();
-            if (selectedObjects == null) {
-                isSelected = false;
-            } else {
-                boolean inSelectedObjects = false;
-                for (var o : selectedObjects) {
-                    if (o.equals(this)) {
-                        inSelectedObjects = true;
-                        break;
-                    }
-                }
-                if (!inSelectedObjects)
-                    isSelected = false;
-            }
-            repaint();
         });
     }
 
@@ -145,6 +99,7 @@ public abstract class UMLObject extends JComponent {
 
     public void setSelected(boolean selected) {
         isSelected = selected;
+        repaint();
     }
 
     @Override

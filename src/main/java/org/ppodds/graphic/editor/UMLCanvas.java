@@ -1,8 +1,8 @@
 package org.ppodds.graphic.editor;
 
-import org.ppodds.graphic.SelectedArea;
-import org.ppodds.graphic.line.*;
-import org.ppodds.graphic.object.*;
+import org.ppodds.graphic.line.ConnectionLine;
+import org.ppodds.graphic.object.CompositeObject;
+import org.ppodds.graphic.object.UMLObject;
 
 import javax.swing.*;
 import java.awt.*;
@@ -17,102 +17,52 @@ import java.util.List;
  * The objects should be painted
  */
 public class UMLCanvas extends JPanel {
-    private final Editor editor;
-    private SelectedArea selectedArea;
-    private final List<ConnectionLine> connectionLineList;
+
+    private final List<ConnectionLine> connectionLineList = new LinkedList<>();
+    private final List<UMLObject> umlObjectList = new LinkedList<>();
     public static final int WIDTH = 540;
     public static final int HEIGHT = 540;
 
     public UMLCanvas() {
         super(null);
-        editor = Editor.getInstance();
-        connectionLineList = new LinkedList<>();
         setPreferredSize(new Dimension(WIDTH, HEIGHT));
         addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
+                Editor.getInstance().getEditorState().getOperation().getUsingBehavior().mouseClicked(e);
             }
 
             @Override
             public void mousePressed(MouseEvent e) {
-                switch (editor.getEditorState().getOperation()) {
-                    case CLASS -> createClassObject(e.getX(), e.getY());
-                    case USE_CASE -> createUseCaseObject(e.getX(), e.getY());
-                }
-
-                // select null detect
-                if (editor.getEditorState().getOperation() == EditorState.EditorOperation.SELECT) {
-                    editor.getEditorState().setSelectedObjects(null);
-                    // create select area
-                    selectedArea = new SelectedArea(e.getX(), e.getY());
-                    add(selectedArea);
-                    setComponentZOrder(selectedArea, 0);
-                    selectedArea.repaint();
-                }
+                Editor.getInstance().getEditorState().getOperation().getUsingBehavior().mousePressed(e);
             }
 
             @Override
             public void mouseReleased(MouseEvent e) {
-                if (editor.getEditorState().getOperation() == EditorState.EditorOperation.SELECT && selectedArea != null) {
-                    // select UMLObjects in selected area
-                    selectedArea.selectUMLObjects(getComponents());
-
-                    remove(selectedArea);
-                    selectedArea = null;
-                    repaint();
-                }
+                Editor.getInstance().getEditorState().getOperation().getUsingBehavior().mouseReleased(e);
             }
 
             @Override
             public void mouseEntered(MouseEvent e) {
+                Editor.getInstance().getEditorState().getOperation().getUsingBehavior().mouseEntered(e);
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
+                Editor.getInstance().getEditorState().getOperation().getUsingBehavior().mouseExited(e);
             }
         });
         addMouseMotionListener(new MouseMotionListener() {
             @Override
             public void mouseDragged(MouseEvent e) {
-                if (editor.getEditorState().getOperation() == EditorState.EditorOperation.SELECT && selectedArea != null) {
-                    selectedArea.selecting(Math.max(e.getX(), 0), Math.max(e.getY(), 0));
-                }
+                Editor.getInstance().getEditorState().getOperation().getUsingBehavior().mouseDragged(e);
             }
 
             @Override
             public void mouseMoved(MouseEvent e) {
+                Editor.getInstance().getEditorState().getOperation().getUsingBehavior().mouseMoved(e);
             }
         });
-    }
-
-    public void createCompositeObject() {
-        UMLObject[] selectedObjects = editor.getEditorState().getSelectedObjects();
-        if (selectedObjects != null && selectedObjects.length > 1) {
-            for (var o : selectedObjects)
-                remove(o);
-            CompositeObject obj = new CompositeObject(selectedObjects);
-            add(obj);
-            setComponentZOrder(obj, 0);
-            repaint();
-        }
-    }
-
-    public void ungroupCompositeObject() {
-        UMLObject[] selectedObjects = editor.getEditorState().getSelectedObjects();
-        if (selectedObjects != null && selectedObjects.length == 1
-                && selectedObjects[0] instanceof CompositeObject o) {
-            remove(o);
-            int x = o.getX();
-            int y = o.getY();
-            for (var child : o.getComponents()) {
-                o.remove(child);
-                add(child);
-                setComponentZOrder(child, 0);
-                child.setLocation(x + child.getX(), y + child.getY());
-                ((UMLObject) child).setGrouped(false);
-            }
-            repaint();
-        }
     }
 
     public void changeObjectName(UMLObject obj, String name) {
@@ -123,40 +73,34 @@ public class UMLCanvas extends JPanel {
         repaint();
     }
 
-    public void createClassObject(int x, int y) {
-        ClassObject obj = new ClassObject(x, y);
-        add(obj);
-        setComponentZOrder(obj, 0);
-        repaint();
+    public UMLObject[] getObjects() {
+        UMLObject[] t = new UMLObject[umlObjectList.size()];
+        umlObjectList.toArray(t);
+        return t;
     }
 
-    public void createUseCaseObject(int x, int y) {
-        UseCaseObject obj = new UseCaseObject(x, y);
-        add(obj);
-        setComponentZOrder(obj, 0);
+    public void addObject(UMLObject object) {
+        add(object);
+        umlObjectList.add(object);
+        setComponentZOrder(object, 0);
         repaint();
     }
 
     public void showPreviewObject(UMLObject previewObject) {
         add(previewObject);
+        umlObjectList.add(previewObject);
         setComponentZOrder(previewObject, 0);
         repaint();
     }
 
     public void removePreviewObject(UMLObject previewObject) {
         remove(previewObject);
+        umlObjectList.remove(previewObject);
         repaint();
     }
 
-    public void createConnectionLine(ConnectionLineType type, UMLBasicObject.ConnectionPortDirection fromConnectionPort, UMLBasicObject.ConnectionPortDirection toConnectionPort, UMLBasicObject fromObject, UMLBasicObject toObject) {
-        switch (type) {
-            case ASSOCIATION_LINE ->
-                    connectionLineList.add(new AssociationLine(fromConnectionPort, toConnectionPort, fromObject, toObject));
-            case GENERALIZATION_LINE ->
-                    connectionLineList.add(new GeneralizationLine(fromConnectionPort, toConnectionPort, fromObject, toObject));
-            case COMPOSITION_LINE ->
-                    connectionLineList.add(new CompositionLine(fromConnectionPort, toConnectionPort, fromObject, toObject));
-        }
+    public void addConnectionLine(ConnectionLine connectionLine) {
+        connectionLineList.add(connectionLine);
         repaint();
     }
 
