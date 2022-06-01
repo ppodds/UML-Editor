@@ -21,7 +21,7 @@ public class CompositionLine extends ConnectionLine {
         Vector2D v = arrowEndPoint.subtract(arrowStartPoint);
         h = v.unitVector().multiply(8 * Math.sqrt(2));
         lineEndPoint = arrowStartPoint.add(v.subtract(h));
-        g2.drawLine((int) arrowStartPoint.x, (int) arrowStartPoint.y, (int) lineEndPoint.x, (int) lineEndPoint.y);
+        g2.drawLine((int) arrowStartPoint.x(), (int) arrowStartPoint.y(), (int) lineEndPoint.x(), (int) lineEndPoint.y());
     }
 
     @Override
@@ -32,10 +32,10 @@ public class CompositionLine extends ConnectionLine {
         Vector2D p2 = lineEndPoint.add(h);
         Vector2D p3 = lineEndPoint.add(t.add(t.normalVector()));
         Path2D.Double path = new Path2D.Double();
-        path.moveTo(lineEndPoint.x, lineEndPoint.y);
-        path.lineTo(p1.x, p1.y);
-        path.lineTo(p2.x, p2.y);
-        path.lineTo(p3.x, p3.y);
+        path.moveTo(lineEndPoint.x(), lineEndPoint.y());
+        path.lineTo(p1.x(), p1.y());
+        path.lineTo(p2.x(), p2.y());
+        path.lineTo(p3.x(), p3.y());
         path.closePath();
         g2.draw(path);
     }

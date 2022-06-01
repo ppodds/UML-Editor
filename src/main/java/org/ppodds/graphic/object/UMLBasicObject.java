@@ -50,14 +50,14 @@ public abstract class UMLBasicObject extends UMLObject {
         Point p3 = shape.getPointOfDirection(Shape.Direction.RIGHT_TOP);
         Point p4 = shape.getPointOfDirection(Shape.Direction.LEFT_BOTTOM);
 
-        g2.drawLine(p1.getX() + getPadding(),
-                p1.getY() + getPadding(),
-                p2.getX() + getPadding(),
-                p2.getY() + getPadding());
-        g2.drawLine(p3.getX() + getPadding(),
-                p3.getY() + getPadding(),
-                p4.getX() + getPadding(),
-                p4.getY() + getPadding());
+        g2.drawLine(p1.x() + getPadding(),
+                p1.y() + getPadding(),
+                p2.x() + getPadding(),
+                p2.y() + getPadding());
+        g2.drawLine(p3.x() + getPadding(),
+                p3.y() + getPadding(),
+                p4.x() + getPadding(),
+                p4.y() + getPadding());
 
         int width = (getWidth() - getPadding() * 2) / 20;
         int height = (getHeight() - getPadding() * 2) / 20;
@@ -67,10 +67,10 @@ public abstract class UMLBasicObject extends UMLObject {
         Point p7 = shape.getPointOfDirection(Shape.Direction.LEFT);
         Point p8 = shape.getPointOfDirection(Shape.Direction.RIGHT);
 
-        g2.fillRect(p5.getX() + getPadding() - width / 2, p5.getY() + getPadding() - height, width, height);
-        g2.fillRect(p6.getX() + getPadding() - width / 2, p6.getY() + getPadding(), width, height);
-        g2.fillRect(p7.getX() + getPadding() - width, p7.getY() + getPadding() - height / 2, width, height);
-        g2.fillRect(p8.getX() + getPadding(), p8.getY() + getPadding() - height / 2, width, height);
+        g2.fillRect(p5.x() + getPadding() - width / 2, p5.y() + getPadding() - height, width, height);
+        g2.fillRect(p6.x() + getPadding() - width / 2, p6.y() + getPadding(), width, height);
+        g2.fillRect(p7.x() + getPadding() - width, p7.y() + getPadding() - height / 2, width, height);
+        g2.fillRect(p8.x() + getPadding(), p8.y() + getPadding() - height / 2, width, height);
     }
 
 

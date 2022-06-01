@@ -21,7 +21,7 @@ public class AssociationLine extends ConnectionLine {
         Vector2D v = arrowEndPoint.subtract(arrowStartPoint);
         base = v.normalVector().unitVector().multiply(7 * 2);
         lineEndPoint = arrowStartPoint.add(v.subtract(v.unitVector().multiply(7 * Math.sqrt(3))));
-        g2.drawLine((int) arrowStartPoint.x, (int) arrowStartPoint.y, (int) arrowEndPoint.x, (int) arrowEndPoint.y);
+        g2.drawLine((int) arrowStartPoint.x(), (int) arrowStartPoint.y(), (int) arrowEndPoint.x(), (int) arrowEndPoint.y());
     }
 
     @Override
@@ -31,9 +31,9 @@ public class AssociationLine extends ConnectionLine {
         Vector2D p2 = lineEndPoint.add(base.normalVector().reverse());
         Vector2D p3 = lineEndPoint.add(base.multiply(0.5).reverse());
         Path2D.Double path = new Path2D.Double();
-        path.moveTo(p1.x, p1.y);
-        path.lineTo(p2.x, p2.y);
-        path.lineTo(p3.x, p3.y);
+        path.moveTo(p1.x(), p1.y());
+        path.lineTo(p2.x(), p2.y());
+        path.lineTo(p3.x(), p3.y());
         g2.draw(path);
     }
 }

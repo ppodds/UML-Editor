@@ -71,8 +71,8 @@ public class SelectBehavior extends Behavior {
             if (topObject.isSelected()) {
                 topObject.setVisible(false);
                 movingPreview.setVisible(true);
-                movingPreview.setLocation(beforeMovePosition.getX() + e.getX() - beforeMoveOffset.getX(),
-                        beforeMovePosition.getY() + e.getY() - beforeMoveOffset.getY());
+                movingPreview.setLocation(beforeMovePosition.x() + e.getX() - beforeMoveOffset.x(),
+                        beforeMovePosition.y() + e.getY() - beforeMoveOffset.y());
             }
         } else {
             if (selectedArea != null) {
