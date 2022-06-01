@@ -1,7 +1,5 @@
 package org.ppodds.graphic.editor;
 
-import org.ppodds.core.event.ChangeListener;
-
 import javax.swing.*;
 
 public class Editor extends JFrame {
@@ -33,11 +31,4 @@ public class Editor extends JFrame {
     public static Editor getInstance() {
         return instance;
     }
-
-
-    public ChangeListener[] getChangeListeners() {
-        return getListeners(ChangeListener.class);
-    }
-
-
 }
