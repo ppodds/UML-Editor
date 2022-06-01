@@ -8,6 +8,9 @@ public class Editor extends JFrame {
     private final EditorContentPane editorContentPane;
 
     public Editor() {
+        if (instance != null)
+            throw new RuntimeException("Can't make multiple Editor instance");
+
         instance = this;
         editorState = new EditorState();
         editorContentPane = new EditorContentPane();
